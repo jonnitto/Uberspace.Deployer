@@ -1,0 +1,17 @@
+# Install: dep install
+# Deploy: dep deploy
+
+# The target domain
+domain.tld:
+  # Put here the hostname
+  # https://dashboard.uberspace.de/dashboard/datasheet
+  hostname: __SERVER__.uberspace.de
+
+  # Put here the Uberspace username
+  user: __USER__
+
+  # Put here the ssh repository
+  repository: git@github.com:__OWNER__/__REPOSITORY__.git
+
+  # Add here the slack webhook
+  slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
