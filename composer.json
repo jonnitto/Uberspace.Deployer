@@ -1,0 +1,17 @@
+{
+    "name": "jonnitto/uberspace-deployer",
+    "description": "Unofficial deployer recipes for Uberspace interacting with Neos CMS",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jon Uhlmann",
+            "email": "me@jonnitto.ch"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "ext-intl": "*",
+        "deployer/deployer": "^6.8"
+    }
+}
