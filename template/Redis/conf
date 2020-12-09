@@ -1,0 +1,3 @@
+unixsocket /home/{{user}}/.redis/sock
+daemonize no
+port 0
