@@ -20,6 +20,7 @@ task('install', [
     'deploy:vendors',
     'deploy:shared',
     'deploy:writable',
+    'deploy:upload_assets_folder',
     'install:settings',
     'install:caches',
     'install:import',
@@ -76,7 +77,7 @@ task('install:redis', static function (): void {
     $confFile = '~/.redis/conf';
     $serviceIniFile = '~/etc/services.d/redis.ini';
     if (!test("[ -d $confFolder ]")) {
-        \mkdir($confFolder);
+        run("mkdir $confFolder");
     }
     if (!test("[ -f $confFile ]")) {
         $confTemplate = parse(\file_get_contents(__DIR__ . '/../template/Redis/conf'));
@@ -95,7 +96,7 @@ task('install:set_credentials', static function (): void {
     set('db_password', run('grep -Po -m 1 "password=\K(\S)*" ~/.my.cnf'));
     if (get('db_name') !== get('user')) {
         // We need to create the db
-        run('mysql -e "CREATE DATABASE {{db_name}}"');
+        run('mysql -e "DROP DATABASE IF EXISTS {{db_name}}; CREATE DATABASE {{db_name}} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"');
     }
 })->shallow()->setPrivate();
 
@@ -169,5 +170,10 @@ task('install:import:resources', static function (): void {
         run("find . -type f \! \( -name commit-msg -or -name '*.sh' \) -exec chmod 664 {} \;");
     }
 })->setPrivate();
+
+task('install:success', static function (): void {
+    $stage = has('stage') ? ' {{stage}}' : '';
+    writebox("<strong>Successfully installed!</strong><br>To deploy your site in the future, simply run <strong>dep deploy$stage</strong>", 'green');
+})->shallow()->setPrivate();
 
 fail('install', 'deploy:unlock');

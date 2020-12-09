@@ -28,7 +28,6 @@ function symlinkDomain(): string
             }
             run('mv html html.backup');
         }
-        run("rm -rf html");
         run("ln -s $folderToWebRoot html");
         writebox("<strong>$realDomain</strong> is now the default target for this server", 'green');
         return 'setToDefault';

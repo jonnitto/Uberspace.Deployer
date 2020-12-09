@@ -60,6 +60,9 @@ set('redis_databases_with_numbers', static function (): array {
 });
 
 
+// Composer specific
+set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader');
+
 // Git specifc values
 set('bin/git', static function (): string {
     return 'GIT_SSH_COMMAND="ssh -i ~/.ssh/' . get('ssh_key') . '" ' . locateBinaryPath('git');
