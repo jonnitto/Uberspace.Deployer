@@ -31,7 +31,7 @@ set('db_name', static function (): string {
         return Yaml::parse($yaml)['dbname'];
     } catch (RuntimeException $e) {
         $name = has('database') ? '{{database}}' : camelCaseToSnakeCase(get('repository_short_name')) . '_neos';
-        $stage = !has('database') && has('stage') ? '_{{stage}}' : '';
+        $stage = !has('database') && has('stage') ? '_' . camelCaseToSnakeCase(get('stage')) : '';
         return parse('{{user}}_' . $name . $stage);
     }
 });
@@ -109,7 +109,7 @@ set('ssh_key', get('repository_short_name'));
 // Server specifc values
 set('editor', 'nano');
 set('html_path', '/var/www/virtual/{{user}}');
-set('deploy_path', '/var/www/virtual/{{user}}/{{deploy_folder}}');
+set('deploy_path', '{{html_path}}/{{deploy_folder}}');
 set('db_backup_folder', '{{deploy_path}}/.dep/databases/dumps');
 set('db_backup_keep_dumps', 5);
 
