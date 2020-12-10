@@ -13,5 +13,5 @@ domain.tld:
   # Put here the ssh repository
   repository: git@github.com:__OWNER__/__REPOSITORY__.git
 
-  # Add here the slack webhook
-  slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
+  # Add here the slack webhook (optional)
+  # slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
