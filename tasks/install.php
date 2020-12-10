@@ -12,6 +12,7 @@ task('install', [
     'install:check',
     'server:ssh_key',
     'install:wait',
+    'server:php:version',
     'install:redis',
     'install:set_credentials',
     'deploy:release',
