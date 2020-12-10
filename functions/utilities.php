@@ -43,7 +43,7 @@ function cleanUpWhitespaces(?string $string = null): ?string
  */
 function camelCaseToSnakeCase(string $input): string
 {
-    return \str_replace('-', '_', \strtolower(\preg_replace('/(?<!^)[A-Z]/', '_$0', $input)));
+    return \preg_replace('/[-\.]/', '_', \strtolower(\preg_replace('/(?<!^)[A-Z]/', '_$0', $input)));
 }
 
 /**
