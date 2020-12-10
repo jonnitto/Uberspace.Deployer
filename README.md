@@ -300,11 +300,7 @@ and also (if set) the name of the `stage`.
 #### `remove_robots_txt` (bool)
 
 With Neos.Seo, the robots.txt gets included in Neos and enables automatic sitemap links and other features.
-You can read more about this [feature here][seo robots.txt].
-
-# https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
-
-# Defaults to true
+You can read more about this [feature here][seo robots.txt]. Defaults to `true`
 
 #### `redis_start_db_number` (integer)
 
