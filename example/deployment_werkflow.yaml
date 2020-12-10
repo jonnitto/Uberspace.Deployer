@@ -1,0 +1,109 @@
+# SSH_PRIVATE_KEY:     dep git:ssh:key
+# Get SSH_KNOWN_HOSTS: dep git:ssh:know_hosts
+
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - production
+      - staging
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      node_version: 14
+      php_version: 7.4
+      composer_auth: ${{ secrets.COMPOSER_AUTH }}
+    steps:
+      - name: Set environment variables
+        run: echo "stage=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+      - name: Setup deployment
+        uses: tallyb/deployments@0.5.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ env.stage }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          tools: composer:v2
+          extensions: mbstring, intl
+
+      - name: Configure composer authentication
+        run: composer config --auth ${{ env.composer_auth }}
+        if: ${{ env.composer_auth }}
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Restore composer cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install packages with composer
+        run: composer install --no-interaction --no-ansi --optimize-autoloader --no-progress --prefer-dist
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Restore yarn cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Build JS and CSS
+        run: yarn pipeline
+
+      - name: Deploy website
+        uses: deployphp/action@v1.0.7
+        with:
+          private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          dep: deploy ${{ env.stage }} --no-interaction --composer_auth "${{ env.composer_auth }}"
+
+      - name: Update deployment status
+        uses: tallyb/deployments@0.5.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env_url: ${{ github.event.repository.homepage }}
+
+      - name: Slack notification
+        uses: 8398a7/action-slack@v3
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          text: '*Deployment ${{ job.status }}:* <${{ github.event.repository.git_url }}|${{ github.event.repository.name }}> to ${{ github.event.repository.homepage }}'
+          job_name: Deploy to Production
+          author_name: <${{ github.event.sender.html_url }}|${{ github.event.head_commit.committer.name }}>
+          fields: commit,message,took
+          github_token: ${{ secrets.GITHUB_TOKEN }}

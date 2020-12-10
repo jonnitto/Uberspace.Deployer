@@ -128,50 +128,52 @@ SetEnvIf Host \.prod$ FLOW_CONTEXT=Production/Local
 
 Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep` or `dep list`
 
-| Command                  | Description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| **Main tasks**           |                                                                   |
-| `deploy`                 | Deploy your project                                               |
-| `install`                | Initialize installation                                           |
-| `rollback`               | Rollback to previous release                                      |
-| `ssh`                    | Connect to host through ssh                                       |
-| `flow`                   | Run any flow command                                              |
-| `help`                   | Displays help for a command                                       |
-| **Deploy tasks**         |                                                                   |
-| `deploy`                 | Deploy your project                                               |
-| `deploy:unlock`          | Unlock deploy                                                     |
-| **Install tasks**        |                                                                   |
-| `install`                | Initialize installation                                           |
-| `install:import`         | Import your local database and persistent resources to the server |
-| `install:symlink`        | Set the symbolic link for this site                               |
-| **Database task**        |                                                                   |
-| `database:backup`        | Create a backup from the current database on the server           |
-| **Flow tasks**           |                                                                   |
-| `flow`                   | Run any flow command                                              |
-| `flow:configuration`     | Edit shared configuration yaml files                              |
-| `flow:create_admin`      | Create a new administrator                                        |
-| `flow:flush_caches`      | Flush all caches                                                  |
-| `flow:node:migrate`      | List and run node migrations                                      |
-| `flow:node:repair`       | Repair inconsistent nodes in the content repository               |
-| `flow:publish_resources` | Publish resources                                                 |
-| `flow:run_migrations`    | Apply database migrations                                         |
-| `flow:site:import`       | Import the site from a package with a xml file                    |
-| **Git tasks**            |                                                                   |
-| `git:commit`             | Commit current changes to git                                     |
-| `git:merge`              | Merge branch                                                      |
-| `git:tag`                | Create release tag on git                                         |
-| **Server tasks**         |                                                                   |
-| `server:cronjob`         | Edit the cronjobs                                                 |
-| `server:domain:add`      | Add a domain to uberspace                                         |
-| `server:domain:list`     | List all domains and subdomains                                   |
-| `server:domain:remove`   | Remove a domain from uberspace                                    |
-| `server:ssh_key`         | Create and/or read the deployment key                             |
-| `server:php:restart`     | Restart PHP                                                       |
-| `server:php:version`     | Set the PHP version on the server                                 |
-| **Config tasks**         |                                                                   |
-| `config:current`         | Show current paths                                                |
-| `config:dump`            | Print host configuration                                          |
-| `config:hosts`           | Print all hosts                                                   |
+| Command                  | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| **Main tasks**           |                                                                               |
+| `deploy`                 | Deploy your project                                                           |
+| `install`                | Initialize installation                                                       |
+| `rollback`               | Rollback to previous release                                                  |
+| `ssh`                    | Connect to host through ssh                                                   |
+| `flow`                   | Run any flow command                                                          |
+| `help`                   | Displays help for a command                                                   |
+| **Deploy tasks**         |                                                                               |
+| `deploy`                 | Deploy your project                                                           |
+| `deploy:unlock`          | Unlock deploy                                                                 |
+| **Install tasks**        |                                                                               |
+| `install`                | Initialize installation                                                       |
+| `install:import`         | Import your local database and persistent resources to the server             |
+| `install:symlink`        | Set the symbolic link for this site                                           |
+| **Database task**        |                                                                               |
+| `database:backup`        | Create a backup from the current database on the server                       |
+| **Flow tasks**           |                                                                               |
+| `flow`                   | Run any flow command                                                          |
+| `flow:configuration`     | Edit shared configuration yaml files                                          |
+| `flow:create_admin`      | Create a new administrator                                                    |
+| `flow:flush_caches`      | Flush all caches                                                              |
+| `flow:node:migrate`      | List and run node migrations                                                  |
+| `flow:node:repair`       | Repair inconsistent nodes in the content repository                           |
+| `flow:publish_resources` | Publish resources                                                             |
+| `flow:run_migrations`    | Apply database migrations                                                     |
+| `flow:site:import`       | Import the site from a package with a xml file                                |
+| **Git tasks**            |                                                                               |
+| `git:commit`             | Commit current changes to git                                                 |
+| `git:merge`              | Merge branch                                                                  |
+| `git:ssh:key`            | Output private key for `SSH_PRIVATE_KEY` secret and upload public key to host |
+| `git:ssh:know_hosts`     | Output the know host for the `SSH_KNOWN_HOSTS` secret                         |
+| `git:tag`                | Create release tag on git                                                     |
+| **Server tasks**         |                                                                               |
+| `server:cronjob`         | Edit the cronjobs                                                             |
+| `server:domain:add`      | Add a domain to uberspace                                                     |
+| `server:domain:list`     | List all domains and subdomains                                               |
+| `server:domain:remove`   | Remove a domain from uberspace                                                |
+| `server:ssh_key`         | Create and/or read the deployment key                                         |
+| `server:php:restart`     | Restart PHP                                                                   |
+| `server:php:version`     | Set the PHP version on the server                                             |
+| **Config tasks**         |                                                                               |
+| `config:current`         | Show current paths                                                            |
+| `config:dump`            | Print host configuration                                                      |
+| `config:hosts`           | Print all hosts                                                               |
 
 ## Slack notifications
 
@@ -187,6 +189,69 @@ domain.tld:
     - https://hooks.slack.com/services/__SLACK/WEBHOOK/CHANNEL_TWO__
     - https://hooks.slack.com/services/__SLACK/WEBHOOK/CHANNEL_N__
 ```
+
+## Deployment of staging and production to the same hosts
+
+If you want to have an staging and production instance on the same host, you should set up at least
+two branches, e.g. `staging` and `production`. It is recommended that you name the `stage` and the
+`branch` name the same:
+
+```yaml
+.base: &base
+  hostname: __SERVER__.uberspace.de
+  user: __USER__
+  repository: git@github.com:__OWNER__/__REPOSITORY__.git
+
+domain.tld:
+  <<: *base
+  branch: production
+  stage: production
+
+staging.domain.tld:
+  <<: *base
+  branch: staging
+  stage: staging
+  redis_start_db_number: 10
+```
+
+`redis_start_db_number` has to be set, because you don't want to share the same redis database for
+staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
+
+## Deployment of staging and production to the multiple hosts
+
+```yaml
+.base: &base
+  repository: git@github.com:__OWNER__/__REPOSITORY__.git
+
+domain.tld:
+  <<: *base
+  hostname: __SERVER_PROD__.uberspace.de
+  user: __USER_PROD__
+  branch: production
+  stage: production
+
+staging.domain.tld:
+  <<: *base
+  hostname: __SERVER_STAGE__.uberspace.de
+  user: __USER_STAGE__
+  branch: staging
+  stage: staging
+```
+
+## Automatic deployment with GitHub actions
+
+In the [example] folder you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments
+via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
+
+This exmaple is just meant as an inspiration, you can (and should) edit this to fit you needs. In this workflows
+are some GitHub secrets you can set:
+
+| Secret              | Description                                                                                        |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| `COMPOSER_AUTH`     | As described [above](#the---composer_auth-input-option-for-the-tasks)                              |
+| `SLACK_WEBHOOK_URL` | It is recommended to let GitHub hanlde the slack notifications                                     |
+| `SSH_KNOWN_HOSTS`   | Enter here the host from uberspace. You can output these with the command `dep git:ssh:know_hosts` |
+| `SSH_PRIVATE_KEY`   | Enter here the private key. You can ouput the private key with the command `dep git:ssh:key`       |
 
 ## Default parameter
 
@@ -225,9 +290,21 @@ upload_assets_folder:
   - DistributionPackages/*/Resources/Public/Styles
 ```
 
-#### `db_name` (string)
+#### `db_name` & `database` (string)
 
-If Neos is already installed, it will use the flow command `configuration:show` to get the database name. Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos` and also (if set) the name of the `stage`.
+If Neos is already installed, it will use the flow command `configuration:show` to get the database name.
+Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username
+from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos`
+and also (if set) the name of the `stage`.
+
+#### `remove_robots_txt` (bool)
+
+With Neos.Seo, the robots.txt gets included in Neos and enables automatic sitemap links and other features.
+You can read more about this [feature here][seo robots.txt].
+
+# https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
+
+# Defaults to true
 
 #### `redis_start_db_number` (integer)
 
@@ -253,6 +330,9 @@ redis_databases:
 ```
 
 #### redis_databases_with_numbers (array)
+
+This sets the database names (based on `redis_databases`) with the corresponding
+number (based on `redis_start_db_number`)
 
 ```yaml
 redis_databases_with_numbers:
@@ -301,7 +381,7 @@ This is set the current date and time. Example: `2021-01-30__13-40-10`
 </details>
 
 [deployer]: https://deployer.org
-[example]: examples
+[example]: example
 [slack webhook]: https://slack.com/oauth/authorize?&client_id=113734341365.225973502034&scope=incoming-webhook
 [let's encrypt]: https://letsencrypt.org
 [uberspace]: https://uberspace.de/
@@ -311,3 +391,4 @@ This is set the current date and time. Example: `2021-01-30__13-40-10`
 [ssh manual on github]: https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 [uberspace dashboard]: https://dashboard.uberspace.de/dashboard/datasheet
 [set_values.php]: set_values.php
+[seo robots.txt]: https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
