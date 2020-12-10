@@ -20,19 +20,19 @@ task('git:commit', static function (): void {
     $type = askChoiceln(
         'Select the type of change that you\'re committing',
         [
-            'Fix:      A bug fix',
-            'Update:   A backwards-compatible enhancement',
-            'Breaking: A backwards-incompatible enhancement',
-            'Docs:     Documentation change',
-            'Build:    Build process update',
-            'New:      A new feature implementation',
-            'Upgrade:  Dependency upgrade',
-            'Chore:    Other changes (e.g.: refactoring)',
+            'Fix'      => 'A bug fix',
+            'Update'   => 'A backwards-compatible enhancement',
+            'Breaking' => 'A backwards-incompatible enhancement',
+            'Docs'     => 'Documentation change',
+            'Build'    => 'Build process update',
+            'New'      => 'A new feature implementation',
+            'Upgrade'  => 'Dependency upgrade',
+            'Chore'    => 'Other changes (e.g.: refactoring)',
         ],
-        0
+        'Fix'
     );
-    $type = \substr($type, 0, \strpos($type, " "));
     writeln(' ');
+    $type .= ':';
     $short = askln('Write a short, imperative tense description of the change:', true, null, false, $type);
     $long = askln('Provide a longer description of the change: (press enter to skip)');
 
