@@ -27,7 +27,7 @@ task('flow:node:migrate', static function (): void {
     }
     writeln(run('{{flow_command}} node:migrationstatus', ['timeout' => null]));
     writeln('');
-    while ($version = askln(' Please enter the version number of the migration you want to run. To finish the command, press enter ')) {
+    while ($version = askln('Please enter the version number of the migration you want to run. To finish the command, press enter')) {
         writebox("Run migration <strong>$version</strong>", 'blue');
         run("{{flow_command}} node:migrate --version $version", ['timeout' => null]);
         writeln('');
