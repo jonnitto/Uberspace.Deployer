@@ -107,12 +107,12 @@ function askln(string $question, bool $required = false, ?string $default = null
 /**
  * @param string $message
  * @param string[] $availableChoices
- * @param string|null $default
+ * @param string|int|null $default
  * @param bool|false $multiselect
  * @return string|string[]
  * @codeCoverageIgnore
  */
-function askChoiceln(string $message, array $availableChoices, ?int $default = null, bool $multiselect = false)
+function askChoiceln(string $message, array $availableChoices, $default = null, bool $multiselect = false)
 {
     Context::required(__FUNCTION__);
 
