@@ -81,7 +81,7 @@ task('deploy:flush_caches', static function (): void {
 })->setPrivate();
 
 task('deploy:remove_robotstxt', static function (): void {
-    if (get('removeRobotsTxt', true)) {
+    if (get('remove_robots_txt')) {
         run('rm -f {{release_path}}/Web/robots.txt');
     }
 })->setPrivate();
