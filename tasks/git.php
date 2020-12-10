@@ -116,3 +116,30 @@ task('git:merge', static function (): void {
         runLocally('git stash pop');
     }
 });
+
+desc('Output the know host for the SSH_KNOWN_HOSTS secret');
+task('git:ssh:know_hosts', static function (): void {
+    writebox("Put this value as <strong>SSH_KNOWN_HOSTS</strong> secret on github:", 'blue');
+    foreach (getAllHostnames() as $hostname) {
+        $key = trim(runLocally("ssh-keyscan $hostname"));
+        writeln("<info>$key</info>");
+    }
+});
+
+desc('Output private key for SSH_PRIVATE_KEY secret and upload public key to host');
+task('git:ssh:key', static function (): void {
+    runLocally('ssh-keygen -q -t rsa -b 4096 -N "" -C "Github Actions" -f __temp_ssh_key');
+    $private = runLocally('cat __temp_ssh_key');
+    $public = runLocally('cat __temp_ssh_key.pub');
+    writebox("Put this value as <strong>SSH_PRIVATE_KEY</strong> secret on github:", 'blue');
+    writeln("<info>$private</info>");
+    on(Deployer::get()->hosts, function ($host) use ($public) {
+        $file = run("cat ~/.ssh/authorized_keys");
+        $hostname = $host->getRealHostname();
+        if (\strpos($file, $public) === false) {
+            run("echo '$public' >> ~/.ssh/authorized_keys");
+            writebox("The public key was added to authorized_keys on the host $hostname", 'blue');
+        }
+    });
+    runLocally('rm -f __temp_ssh_key __temp_ssh_key.pub');
+});

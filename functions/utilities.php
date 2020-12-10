@@ -22,6 +22,20 @@ function getRealHostname(bool $prefix = false): string
 }
 
 /**
+ * Returns all hostnames
+ *
+ * @return array
+ */
+function getAllHostnames(): array
+{
+    $hostnames = [];
+    on(Deployer::get()->hosts, function ($host) use (&$hostnames) {
+        $hostnames[] = $host->getRealHostname();
+    });
+    return \array_unique($hostnames);
+}
+
+/**
  * Removes double whitespaces and trim the string
  *
  * @param string|null $string
