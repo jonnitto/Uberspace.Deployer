@@ -94,7 +94,6 @@ task('install:redis', static function (): void {
 })->setPrivate();
 
 task('install:set_credentials', static function (): void {
-    set('db_password', run('grep -Po -m 1 "password=\K(\S)*" ~/.my.cnf'));
     if (get('db_name') !== get('user')) {
         // We need to create the db
         run('mysql -e "DROP DATABASE IF EXISTS {{db_name}}; CREATE DATABASE {{db_name}} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"');

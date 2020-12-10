@@ -124,6 +124,10 @@ set('deploy_folder', static function (): string {
     return get('repository_short_name') . $suffix;
 });
 
+set('db_password', static function (): string {
+    return run('grep -Po -m 1 "password=\K(\S)*" ~/.my.cnf');
+});
+
 set('release_name', static function (): string {
     return run('date +"%Y-%m-%d__%H-%M-%S"');
 });
