@@ -1,0 +1,16 @@
+.base: &base
+  repository: git@github.com:__OWNER__/__REPOSITORY__.git
+
+domain.tld:
+  <<: *base
+  hostname: __SERVER_PROD__.uberspace.de
+  user: __USER_PROD__
+  branch: production
+  stage: production
+
+staging.domain.tld:
+  <<: *base
+  hostname: __SERVER_STAGE__.uberspace.de
+  user: __USER_STAGE__
+  branch: staging
+  stage: staging
