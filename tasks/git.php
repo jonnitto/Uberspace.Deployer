@@ -33,7 +33,7 @@ task('git:commit', static function (): void {
     );
     $type = \substr($type, 0, \strpos($type, " "));
     writeln(' ');
-    $short = askln('Write a short, imperative tense description of the change:', true);
+    $short = askln('Write a short, imperative tense description of the change:', true, null, false, $type);
     $long = askln('Provide a longer description of the change: (press enter to skip)');
 
     $breaking = null;

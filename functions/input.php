@@ -79,23 +79,27 @@ function askConfirmationInput(string $question, ?string $questionIfTrue = null, 
  * @param boolean $hidden
  * @return string|null
  */
-function askln(string $question, bool $required = false, ?string $default = null, bool $hidden = false): ?string
+function askln(string $question, bool $required = false, ?string $default = null, bool $hidden = false, string $prefix = ''): ?string
 {
     if (\is_string($default)) {
         $default = parse($default);
+    }
+
+    if (\strlen($prefix)) {
+        $prefix = " $prefix ";
     }
 
     if ($required === true) {
         $answer = null;
         while ($answer === null) {
             writeln("<question> $question </question>");
-            $answer = $hidden ? askHiddenResponse('') : ask('', $default);
+            $answer = $hidden ? askHiddenResponse($prefix) : ask($prefix, $default);
         }
         writeln('');
         return $answer;
     }
     writeln("<question> $question </question>");
-    $answer = $hidden ? askHiddenResponse('') : ask('', $default);
+    $answer = $hidden ? askHiddenResponse($prefix) : ask($prefix, $default);
     writeln('');
     return $answer;
 }
