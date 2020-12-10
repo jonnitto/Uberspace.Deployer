@@ -14,7 +14,7 @@ task('install', [
     'install:wait',
     'server:php:version',
     'install:redis',
-    'install:set_credentials',
+    'install:database',
     'deploy:release',
     'deploy:update_code',
     'deploy:git_config',
@@ -93,7 +93,7 @@ task('install:redis', static function (): void {
     run('supervisorctl status');
 })->setPrivate();
 
-task('install:set_credentials', static function (): void {
+task('install:database', static function (): void {
     if (get('db_name') !== get('user')) {
         // We need to create the db
         run('mysql -e "DROP DATABASE IF EXISTS {{db_name}}; CREATE DATABASE {{db_name}} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"');
