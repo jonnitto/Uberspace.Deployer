@@ -64,6 +64,21 @@ Enter `dep install` and follow the screen instructions
 
 Enter `dep deploy` to make a fresh deployment.
 
+## The `--composer_auth` input option for the tasks
+
+If you want to pass an authentication configuration (for private repositories) during the `install` or `deploy` task,
+you can do this via the `--composer_auth` input option:
+
+Example:
+
+```bash
+dep install --composer_auth "http-basic.repo.packagist.com token XYZ"
+```
+
+This option doesn't add the authentication global to composer on the host, just locally.
+If you want to install the authentication globally, connect via `dep ssh` to the server and enter
+(as an example) `composer config --global --auth http-basic.repo.packagist.com token XYZ` in the CLI.
+
 ## Add a domain
 
 The add a domain to you uberspace, you can either follow the instructions on the [uberspace manual]  
