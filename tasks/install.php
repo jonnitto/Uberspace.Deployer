@@ -3,6 +3,7 @@
 namespace Deployer;
 
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Console\Helper\Table;
 
 desc('Initialize Neos installation');
 task('install', [
@@ -174,6 +175,19 @@ task('install:import:resources', static function (): void {
 task('install:success', static function (): void {
     $stage = has('stage') ? ' {{stage}}' : '';
     writebox("<strong>Successfully installed!</strong><br>To deploy your site in the future, simply run <strong>dep deploy$stage</strong>", 'green');
+    writeln('');
+    writeln('');
+    writeln('<info> Following database credentials are set: </info>');
+    writeln('');
+    $table = new Table(output());
+    $table->setRows([
+        ['Name', get('db_name')],
+        ['User', get('user')],
+        ['Password', get('db_password')],
+    ]);
+    $table->render();
+    writeln('');
+    writeln('');
 })->shallow()->setPrivate();
 
 fail('install', 'deploy:unlock');
