@@ -103,6 +103,17 @@ set('deploy_user', static function (): string {
     return $user;
 });
 
+set('git_commit_types', [
+    'Fix'      => 'A bug fix',
+    'Update'   => 'A backwards-compatible enhancement',
+    'Breaking' => 'A backwards-incompatible enhancement',
+    'Docs'     => 'Documentation change',
+    'Build'    => 'Build process update',
+    'New'      => 'A new feature implementation',
+    'Upgrade'  => 'Dependency upgrade',
+    'Chore'    => 'Other changes (e.g.: refactoring)',
+]);
+
 
 // Connection specifc values
 set('port', 22);

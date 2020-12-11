@@ -4,6 +4,11 @@ namespace Deployer;
 
 desc('Commit current changes to git');
 task('git:commit', static function (): void {
+    $types = get('git_commit_types');
+    if (!\is_array($types) || !\count($types)) {
+        throw new \InvalidArgumentException('`git_commit_types` should be an array and not empty');
+    }
+
     if (!runLocally('git diff --name-only --cached')) {
         writeln('');
         if (!askConfirmationInput('There are no files staged. Do you want to add all files?')) {
@@ -19,17 +24,8 @@ task('git:commit', static function (): void {
 
     $type = askChoiceln(
         'Select the type of change that you\'re committing',
-        [
-            'Fix'      => 'A bug fix',
-            'Update'   => 'A backwards-compatible enhancement',
-            'Breaking' => 'A backwards-incompatible enhancement',
-            'Docs'     => 'Documentation change',
-            'Build'    => 'Build process update',
-            'New'      => 'A new feature implementation',
-            'Upgrade'  => 'Dependency upgrade',
-            'Chore'    => 'Other changes (e.g.: refactoring)',
-        ],
-        'Fix'
+        $types,
+        \array_key_first($types)
     );
     writeln(' ');
     $type .= ':';

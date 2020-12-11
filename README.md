@@ -51,7 +51,7 @@ domain.tld:
   slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
 ```
 
-You can start the installation with  `dep install` and follow the screen instructions.  
+You can start the installation with `dep install` and follow the screen instructions.  
 After this intial installation you can run `dep deploy` to make a fresh deployment.
 
 ## The `--composer_auth` input option for the tasks
@@ -180,7 +180,7 @@ domain.tld:
     - https://hooks.slack.com/services/__SLACK/WEBHOOK/CHANNEL_N__
 ```
 
-## Deployment to multiple stages and/or via GitHub Actions 
+## Deployment to multiple stages and/or via GitHub Actions
 
 <details>
   <summary>Deployment of staging and production to the same hosts</summary>
@@ -206,8 +206,6 @@ staging.domain.tld:
   stage: staging
   redis_start_db_number: 10
 ```
-
-
 
 `redis_start_db_number` has to be set, because you don't want to share the same redis database for
 staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
@@ -262,7 +260,7 @@ This package set some default parameter. All of them are defined in [set_values.
 You can override them in your `yaml` or directly in your `PHP` file.
 
 <details>
-  <summary>Flow related</summary>
+  <summary>Neos & Flow related</summary>
 
 #### `flow_context` (string)
 
@@ -379,6 +377,28 @@ This is set the current date and time. Example: `2021-01-30__13-40-10`
 
 </details>
 
+<details>
+  <summary>Git related</summary>
+
+#### `git_commit_types` (array)
+
+You can set the types of commits for the command `git:commit`.  
+Per default it is based on [commitizen].
+
+```yaml
+git_commit_types:
+  Fix: A bug fix
+  Update: A backwards-compatible enhancement
+  Breaking: A backwards-incompatible enhancement
+  Docs: Documentation change
+  Build: Build process update
+  New: A new feature implementation
+  Upgrade: Dependency upgrade
+  Chore: 'Other changes (e.g.: refactoring)'
+```
+
+</details>
+
 [deployer]: https://deployer.org
 [example]: example
 [slack webhook]: https://slack.com/oauth/authorize?&client_id=113734341365.225973502034&scope=incoming-webhook
@@ -391,3 +411,4 @@ This is set the current date and time. Example: `2021-01-30__13-40-10`
 [uberspace dashboard]: https://dashboard.uberspace.de/dashboard/datasheet
 [set_values.php]: set_values.php
 [seo robots.txt]: https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
+[commitizen]: https://github.com/commitizen/cz-cli
