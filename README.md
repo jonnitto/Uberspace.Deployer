@@ -1,4 +1,4 @@
-# Deployer tasks for Uberspace
+# [Deployer] tasks for [Uberspace] & [Neos CMS]
 
 These deployer scripts are built on top of [Deployer]. Most of the tasks are provided by this library already; this package adds just some optimization for the install process as well as the needed actions for deploying a project. There are also some helper tasks available, who should make your life as a developer a bit easier. Please run the deployer scripts only in your development environment, as Deployer connects automatically to the needed server.
 
@@ -400,6 +400,7 @@ git_commit_types:
 </details>
 
 [deployer]: https://deployer.org
+[neos cms]: https://www.neos.io
 [example]: example
 [slack webhook]: https://slack.com/oauth/authorize?&client_id=113734341365.225973502034&scope=incoming-webhook
 [let's encrypt]: https://letsencrypt.org
