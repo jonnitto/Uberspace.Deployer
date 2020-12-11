@@ -11,8 +11,6 @@ The files should be saved on the root of you project.
 
 [Uberspace] is an awesome hosting provider from Germany. You can find theirs [complete manual here][uberspace manual].
 
-### Create your own Uberspace
-
 First, you have to [register your own uberspace]. Then, add your SSh key to the admin-interface. If you don't know what SSH is, you can read more about this in the [SSH section in the uberspace manual][ssh manual on uberspace] or on the [SSH manual on github].
 
 ## Installation of the deployment scripts
@@ -23,9 +21,7 @@ Enter this on the root of your project:
 composer require --dev jonnitto/uberspace-deployer
 ```
 
-### Create the deployment files for Neos
-
-Create `deploy.php` with following content:
+Create a file with the name `deploy.php` with following content:
 
 ```php
 <?php
@@ -36,12 +32,11 @@ require_once 'Packages/Libraries/jonnitto/uberspace-deployer/neos.php';
 
 ```
 
-Create `deploy.yaml` with following content and edit it following points:
+Create a file with the name `deploy.yaml` with following content and edit it following points:
 
 - Replace `domain.tld` with the corresponding domain, **without** `www.`
 - Replace `__SERVER__` with corresponding server name. You'll find the infos on the [uberspace dashboard].
 - Replace `__USER__` with the corresponding uberspace username
-
 - Replace `__OWNER__/__REPOSITORY` with the corresponding repository
 - Add the `slack_webhook`. (optional) [You can register it here][slack webhook]
 
@@ -56,13 +51,8 @@ domain.tld:
   slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
 ```
 
-### Start installation
-
-Enter `dep install` and follow the screen instructions
-
-## Deployment
-
-Enter `dep deploy` to make a fresh deployment.
+You can start the installation with  `dep install` and follow the screen instructions.  
+After this intial installation you can run `dep deploy` to make a fresh deployment.
 
 ## The `--composer_auth` input option for the tasks
 
@@ -190,11 +180,14 @@ domain.tld:
     - https://hooks.slack.com/services/__SLACK/WEBHOOK/CHANNEL_N__
 ```
 
-## Deployment of staging and production to the same hosts
+## Deployment to multiple stages and/or via GitHub Actions 
+
+<details>
+  <summary>Deployment of staging and production to the same hosts</summary>
 
 If you want to have an staging and production instance on the same host, you should set up at least
 two branches, e.g. `staging` and `production`. It is recommended that you name the `stage` and the
-`branch` name the same:
+`branch` name the same.
 
 ```yaml
 .base: &base
@@ -214,10 +207,15 @@ staging.domain.tld:
   redis_start_db_number: 10
 ```
 
+
+
 `redis_start_db_number` has to be set, because you don't want to share the same redis database for
 staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
 
-## Deployment of staging and production to the multiple hosts
+</details>
+
+<details>
+  <summary>Deployment of staging and production to the multiple hosts</summary>
 
 ```yaml
 .base: &base
@@ -238,7 +236,10 @@ staging.domain.tld:
   stage: staging
 ```
 
-## Automatic deployment with GitHub actions
+</details>
+
+<details>
+  <summary>Automatic deployment with GitHub actions</summary>
 
 In the [example] folder you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments
 via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
@@ -252,6 +253,8 @@ are some GitHub secrets you can set:
 | `SLACK_WEBHOOK_URL` | It is recommended to let GitHub hanlde the slack notifications                                     |
 | `SSH_KNOWN_HOSTS`   | Enter here the host from uberspace. You can output these with the command `dep git:ssh:know_hosts` |
 | `SSH_PRIVATE_KEY`   | Enter here the private key. You can ouput the private key with the command `dep git:ssh:key`       |
+
+</details>
 
 ## Default parameter
 
