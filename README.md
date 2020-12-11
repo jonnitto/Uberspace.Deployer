@@ -258,7 +258,7 @@ are some GitHub secrets you can set:
 
 ## Default parameter
 
-This package set some default parameter. All of them are defined in [set_values.php].  
+This package set some default parameter. All of them are defined in [config.php].  
 You can override them in your `yaml` or directly in your `PHP` file.
 
 <details>
@@ -412,7 +412,7 @@ git_commit_types:
 [ssh manual on uberspace]: https://manual.uberspace.de/basics-ssh.html
 [ssh manual on github]: https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 [uberspace dashboard]: https://dashboard.uberspace.de/dashboard/datasheet
-[set_values.php]: set_values.php
+[config.php]: config.php
 [seo robots.txt]: https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
 [commitizen]: https://github.com/commitizen/cz-cli
 [social preview]: https://user-images.githubusercontent.com/4510166/101900466-d099fb80-3baf-11eb-9599-e5c721001736.png
