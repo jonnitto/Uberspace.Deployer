@@ -1,5 +1,7 @@
 # [Deployer] tasks for [Uberspace] & [Neos CMS]
 
+![social preview]
+
 These deployer scripts are built on top of [Deployer]. Most of the tasks are provided by this library already; this package adds just some optimization for the install process as well as the needed actions for deploying a project. There are also some helper tasks available, who should make your life as a developer a bit easier. Please run the deployer scripts only in your development environment, as Deployer connects automatically to the needed server.
 
 You can look at the [example] folder to look how to set up a deployment.
@@ -413,3 +415,4 @@ git_commit_types:
 [set_values.php]: set_values.php
 [seo robots.txt]: https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
 [commitizen]: https://github.com/commitizen/cz-cli
+[social preview]: https://user-images.githubusercontent.com/4510166/101900466-d099fb80-3baf-11eb-9599-e5c721001736.png
