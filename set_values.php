@@ -138,7 +138,7 @@ set('deploy_folder', static function (): string {
 });
 
 set('db_password', static function (): string {
-    return run('grep -Po -m 1 "password=\K(\S)*" ~/.my.cnf');
+    return run('my_print_defaults client | grep -Po "password=\K(\S)*"');
 });
 
 set('release_name', static function (): string {
