@@ -375,7 +375,7 @@ Defaults to the repository name. If a `stage` is set, the stage will be placed i
 
 #### `release_name` (string)
 
-This is set the current date and time. Example: `2021-01-30__13-40-10`
+This is set to the current date and time. Example: `2021-01-30__13-40-10`
 
 </details>
 
