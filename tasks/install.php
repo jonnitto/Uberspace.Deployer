@@ -29,7 +29,7 @@ task('install', [
     'flow:run_migrations',
     'flow:publish_resources',
     'deploy:remove_robotstxt',
-    'install:symlink',
+    'server:symlink:add',
     'deploy:flush_caches',
     'deploy:symlink',
     'cleanup',
@@ -43,14 +43,6 @@ task('install:import', [
     'install:import:database',
     'install:import:resources'
 ]);
-
-desc('Set the symbolic link for this site');
-task('install:symlink', static function (): void {
-    $symlinkAction = symlinkDomain();
-    if ($symlinkAction === 'setToDefault') {
-        invoke('server:php:restart');
-    }
-});
 
 /**
  * Private tasks

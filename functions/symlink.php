@@ -7,7 +7,7 @@ namespace Deployer;
  *
  * @return string
  */
-function symlinkDomain(): string
+function addSymlink(): string
 {
     cd('{{html_path}}');
     $realDomain = getRealHostname();
@@ -42,3 +42,4 @@ function symlinkDomain(): string
     }
     return 'nothingDone';
 }
+

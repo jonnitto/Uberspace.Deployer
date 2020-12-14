@@ -149,3 +149,11 @@ task('server:domain:list', static function (): void {
 $currentEntry
 ", 'blue');
 });
+
+desc('Set the symbolic link for this site');
+task('server:symlink:add', static function (): void {
+    $symlinkAction = addSymlink();
+    if ($symlinkAction === 'setToDefault') {
+        invoke('server:php:restart');
+    }
+})->shallow();

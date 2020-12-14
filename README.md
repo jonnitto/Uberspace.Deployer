@@ -89,7 +89,7 @@ In order for a website to be accessible to visitors, it must be published to the
 > Do not delete the `/html` folder. If this folder doesn’t exist, the RewriteRules  
 > implementing the additional DocumentRoots don’t work, so all your domains will be unaccessable.
 
-You can use the command `dep install:symlink` to create a correct symlink
+You can use the command `dep server:symlink:add` to create a correct symlink
 
 ## Set the DNS records
 
@@ -135,7 +135,6 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | **Install tasks**        |                                                                               |
 | `install`                | Initialize installation                                                       |
 | `install:import`         | Import your local database and persistent resources to the server             |
-| `install:symlink`        | Set the symbolic link for this site                                           |
 | **Database task**        |                                                                               |
 | `database:backup`        | Create a backup from the current database on the server                       |
 | **Flow tasks**           |                                                                               |
@@ -160,6 +159,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `server:domain:list`     | List all domains and subdomains                                               |
 | `server:domain:remove`   | Remove a domain from uberspace                                                |
 | `server:ssh_key`         | Create and/or read the deployment key                                         |
+| `server:symlink:add`     | Set the symbolic link for this site                                           |
 | `server:php:restart`     | Restart PHP                                                                   |
 | `server:php:version`     | Set the PHP version on the server                                             |
 | **Config tasks**         |                                                                               |
