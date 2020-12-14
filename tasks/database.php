@@ -5,7 +5,7 @@ namespace Deployer;
 desc('Create a backup from the current database on the server');
 task('database:backup', static function () {
     dbBackup();
-});
+})->shallow();
 
 desc('Download dump from the backup folder on the server');
 task('database:download:dump', static function () {
@@ -29,7 +29,8 @@ task('database:download:dump', static function () {
     }
     $output = implode("\n", $items);
     writebox("<strong>Following files where downloaded:</strong><br>$output", 'blue');
-});
+})->shallow();
+
 
 /**
  * Private tasks
