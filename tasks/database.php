@@ -39,6 +39,16 @@ task('database:download:current', static function () {
     writebox("The current database was downloaded and saved as <strong>$file</strong>", 'blue');
 })->shallow();
 
+
+desc('List all databases on the server');
+task('database:list', static function () {
+    $items = getDbs();
+    $output = implode("\n", $items);
+    writebox("<strong>Following databases are on {{user}}.uber.space:</strong><br>$output", 'blue');
+})->shallow();
+
+
+
 /**
  * Private tasks
  */

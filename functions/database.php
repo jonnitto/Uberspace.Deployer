@@ -30,6 +30,19 @@ function createDbDump(): string
 }
 
 /**
+ * Get all dbs on the server
+ *
+ * @return array
+ */
+function getDbs(): array
+{
+    $items = run('mysql -e "SHOW DATABASES LIKE \'{{user}}%\'"');
+    $items = explode("\n", $items);
+    array_shift($items);
+    return $items;
+}
+
+/**
  * Create a backup from the current database on the server
  *
  * @return void

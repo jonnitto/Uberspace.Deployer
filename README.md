@@ -139,6 +139,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `database:backup`           | Create a backup from the current database on the server                       |
 | `database:download:current` | Download current database from the server                                     |
 | `database:download:dump`    | Download dump from the backup folder on the server                            |
+| `database:list`             | List all databases on the server                                              |
 | **Flow tasks**              |                                                                               |
 | `flow`                      | Run any flow command                                                          |
 | `flow:configuration`        | Edit shared configuration yaml files                                          |
@@ -400,7 +401,7 @@ git_commit_types:
   Build: Build process update
   New: A new feature implementation
   Upgrade: Dependency upgrade
-  Chore: 'Other changes (e.g.: refactoring)'
+  Chore: "Other changes (e.g.: refactoring)"
 ```
 
 </details>
