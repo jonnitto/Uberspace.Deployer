@@ -16,6 +16,20 @@ function goToBackupFolder(): string
 }
 
 /**
+ * Create a compressed dump in the current directory
+ *
+ * @return string
+ */
+function createDbDump(): string
+{
+    $filename = parse('{{release_name}}.sql.tgz');
+    run('mysqldump {{db_name}} > dump.sql');
+    run("tar cfz $filename dump.sql");
+    run('rm -f dump.sql');
+    return $filename;
+}
+
+/**
  * Create a backup from the current database on the server
  *
  * @return void
@@ -23,9 +37,7 @@ function goToBackupFolder(): string
 function dbBackup(): void
 {
     cd(goToBackupFolder());
-    run('mysqldump {{db_name}} > dump.sql');
-    run('tar cfz {{release_name}}.sql.tgz dump.sql');
-    run('rm -f dump.sql');
+    createDbDump();
     writebox('Database backup created', 'blue');
 
     $keep = get('db_backup_keep_dumps');

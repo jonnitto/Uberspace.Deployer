@@ -31,6 +31,13 @@ task('database:download:dump', static function () {
     writebox("<strong>Following files where downloaded:</strong><br>$output", 'blue');
 })->shallow();
 
+desc('Download current database from the server');
+task('database:download:current', static function () {
+    $file = createDbDump();
+    download($file, $file);
+    run("rm $file");
+    writebox("The current database was downloaded and saved as <strong>$file</strong>", 'blue');
+})->shallow();
 
 /**
  * Private tasks
