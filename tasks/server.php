@@ -55,6 +55,7 @@ task('server:php:version', static function (): void {
     if ($version !== $currentVersionShort) {
         $output = run("uberspace tools version use php $version");
         writebox($output, 'green');
+        return;
     }
     writebox("As PHP is already set to $version,<br>no configuration was changed", 'blue');
 });
