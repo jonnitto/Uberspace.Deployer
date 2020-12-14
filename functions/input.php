@@ -15,6 +15,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
  */
 function askDomain(string $text, ?string $default = null, ?array $suggestedChoices = null): ?string
 {
+    $text = parse($text);
     $domain = cleanUpWhitespaces(ask(" $text ", $default, $suggestedChoices));
     if ($domain === 'exit') {
         writebox('Canceled, nothing was written', 'red');
@@ -53,6 +54,8 @@ function askDomainWithDefaultAndSuggestions(string $question): string
  */
 function askConfirmationInput(string $question, ?string $questionIfTrue = null, bool $default = false, bool $required = false)
 {
+    $question = parse($question);
+    $questionIfTrue = parse($questionIfTrue);
     $q1Length = getLength($question) + 6;
     $q2Length = getLength($questionIfTrue);
     $placeholderQ1 = $q1Length < $q2Length ? $q2Length - $q1Length : 0;
@@ -115,7 +118,7 @@ function askln(string $question, bool $required = false, ?string $default = null
 function askChoiceln(string $message, array $availableChoices, $default = null, bool $multiselect = false)
 {
     Context::required(__FUNCTION__);
-
+    $message = parse($message);
     if (empty($availableChoices)) {
         throw new \InvalidArgumentException('Available choices should not be empty');
     }
