@@ -3,7 +3,7 @@
 namespace Deployer;
 
 require_once 'recipe/common.php';
-require_once __DIR__ . '/set_values.php';
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/functions/functions.php';
 require_once __DIR__ . '/tasks/database.php';
 require_once __DIR__ . '/tasks/deploy.php';
