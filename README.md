@@ -140,6 +140,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `database:delete`           | Delete a database on the server                                               |
 | `database:download:current` | Download current database from the server                                     |
 | `database:download:dump`    | Download dump from the backup folder on the server                            |
+| `database:import`           | Import a database from the backup folder                                      |
 | `database:list`             | List all databases on the server                                              |
 | **Flow tasks**              |                                                                               |
 | `flow`                      | Run any flow command                                                          |

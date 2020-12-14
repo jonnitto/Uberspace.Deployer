@@ -61,6 +61,24 @@ task('database:delete', static function () {
     }
 })->shallow();
 
+desc('Import a database from the backup folder');
+task('database:import', static function () {
+    cd(goToBackupFolder());
+    if (!testIfDumpExists()) {
+        writebox('There\'s no database dump in the backup folder', 'red');
+        return;
+    }
+    $items = getDumps();
+    $dump = askChoiceln('Which dump you want to import?', $items);
+
+    if (askConfirmationInput("Are you sure you want to overwrite {{db_name}}")) {
+        dbBackup();
+        run("xzcat $dump | mysql {{db_name}}");
+        writebox("The dump was imported to the database <strong>{{db_name}}</strong>", 'blue');
+        invoke('flow:flush_caches');
+    }
+})->shallow();
+
 
 /**
  * Private tasks
