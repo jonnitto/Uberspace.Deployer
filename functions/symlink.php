@@ -43,3 +43,45 @@ function addSymlink(): string
     return 'nothingDone';
 }
 
+/**
+ * Returns the current symlinks as array
+ *
+ * @return array
+ */
+function symlinkArray(): ?array
+{
+    cd('{{html_path}}');
+    $list = run('find . -maxdepth 1 -type l -exec ls -go {} +');
+    preg_match_all('/(?<=\.\/)(\S*)\s*\S*\s*(\S*)/m', $list, $array);
+    $keys = $array[1];
+    $values = $array[2];
+    $count = count($keys);
+
+    if ($count === 0) {
+        writebox('No links are set in {{html_path}}', 'red');
+        return null;
+    }
+
+    $links = [];
+    for ($i = 0; $i < $count; $i++) {
+        $links[$keys[$i]] = $values[$i];
+    }
+
+    return $links;
+}
+
+/**
+ * Remove a smylink from html_path
+ *
+ * @return void
+ */
+function removeSymlink(): void
+{
+    $links = symlinkArray();
+    if (isset($links)) {
+        cd('{{html_path}}');
+        $remove = askChoiceln('Choose which link you want to remove', $links);
+        run("rm -rf $remove");
+        writebox("The link <strong>$remove</strong> with the target <strong>$links[$remove]</strong> was removed", 'blue');
+    }
+}

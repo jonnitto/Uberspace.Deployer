@@ -160,6 +160,8 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `server:domain:remove`   | Remove a domain from uberspace                                                |
 | `server:ssh_key`         | Create and/or read the deployment key                                         |
 | `server:symlink:add`     | Set the symbolic link for this site                                           |
+| `server:symlink:list`    | List current symlinks on the web root                                         |
+| `server:symlink:remove`  | Remove a symbolic link from the web root                                      |
 | `server:php:restart`     | Restart PHP                                                                   |
 | `server:php:version`     | Set the PHP version on the server                                             |
 | **Config tasks**         |                                                                               |

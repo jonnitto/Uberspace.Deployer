@@ -2,6 +2,8 @@
 
 namespace Deployer;
 
+use Symfony\Component\Console\Helper\Table;
+
 desc('Edit the cronjobs');
 task('server:cronjob', static function (): void {
     run('EDITOR={{editor}} crontab -e', ['timeout' => null, 'tty' => true]);
@@ -156,4 +158,32 @@ task('server:symlink:add', static function (): void {
     if ($symlinkAction === 'setToDefault') {
         invoke('server:php:restart');
     }
+})->shallow();
+
+desc('List current symlinks on the web root');
+task('server:symlink:list', static function (): void {
+    $symlinks = symlinkArray();
+
+    if (!isset($symlinks)) {
+        return;
+    }
+    writeln('');
+    writeln('');
+    writeln('<info> Following symlinks are set: </info>');
+    writeln('');
+    $table = new Table(output());
+    $rows = [];
+    foreach ($symlinks as $symlink => $path) {
+        $rows[] = [$symlink, $path];
+    }
+    $table->setHeaders(['Symlink', 'Target']);
+    $table->setRows($rows);
+    $table->render();
+    writeln('');
+    writeln('');
+})->shallow();
+
+desc('Remove a symbolic link from the web root');
+task('server:symlink:remove', static function (): void {
+    removeSymlink();
 })->shallow();
