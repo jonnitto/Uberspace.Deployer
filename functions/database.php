@@ -3,16 +3,26 @@
 namespace Deployer;
 
 /**
+ * Go to the backup folder and create the folder if it doesn't exist'
+ *
+ * @return string
+ */
+function goToBackupFolder(): string
+{
+    if (!test('[ -d {{db_backup_folder}} ]')) {
+        run('mkdir -p {{db_backup_folder}}');
+    }
+    return get('db_backup_folder');
+}
+
+/**
  * Create a backup from the current database on the server
  *
  * @return void
  */
 function dbBackup(): void
 {
-    if (!test('[ -d {{db_backup_folder}} ]')) {
-        run('mkdir -p {{db_backup_folder}}');
-    }
-    cd('{{db_backup_folder}}');
+    cd(goToBackupFolder());
     run('mysqldump {{db_name}} > dump.sql');
     run('tar cfz {{release_name}}.sql.tgz dump.sql');
     run('rm -f dump.sql');

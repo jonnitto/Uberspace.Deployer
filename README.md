@@ -137,6 +137,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `install:import`         | Import your local database and persistent resources to the server             |
 | **Database task**        |                                                                               |
 | `database:backup`        | Create a backup from the current database on the server                       |
+| `database:download:dump` | Download dump from the backup folder on the server                            |
 | **Flow tasks**           |                                                                               |
 | `flow`                   | Run any flow command                                                          |
 | `flow:configuration`     | Edit shared configuration yaml files                                          |
