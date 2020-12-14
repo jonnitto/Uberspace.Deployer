@@ -48,6 +48,20 @@ task('database:list', static function () {
 })->shallow();
 
 
+desc('Delete a database on the server');
+task('database:delete', static function () {
+    writebox('<strong>Be aware, this task is dangerous</strong><br>A backup of the database will be downloaded', 'red');
+    $items = getDbs();
+    $database = askChoiceln('Which database you want to delete?', $items);
+    if (askConfirmationInput("Are you sure you want to delete $database")) {
+        $file = createDbDump($database);
+        download($file, $file);
+        run("mysql -e 'DROP DATABASE $database'");
+        writebox("The database <strong>$database</strong> was downloaded to your disk and removed from the server", 'red');
+        run("rm $file");
+    }
+})->shallow();
+
 
 /**
  * Private tasks

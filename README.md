@@ -137,6 +137,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `install:import`            | Import your local database and persistent resources to the server             |
 | **Database task**           |                                                                               |
 | `database:backup`           | Create a backup from the current database on the server                       |
+| `database:delete`           | Delete a database on the server                                               |
 | `database:download:current` | Download current database from the server                                     |
 | `database:download:dump`    | Download dump from the backup folder on the server                            |
 | `database:list`             | List all databases on the server                                              |

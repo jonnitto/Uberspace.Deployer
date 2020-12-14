@@ -18,12 +18,18 @@ function goToBackupFolder(): string
 /**
  * Create a compressed dump in the current directory
  *
+ * @param string|null $database
  * @return string
  */
-function createDbDump(): string
+function createDbDump(?string $database = null): string
 {
-    $filename = parse('{{release_name}}.sql.tgz');
-    run('mysqldump {{db_name}} > dump.sql');
+    if (isset($database)) {
+        $filename = "{$database}.sql.tgz";
+    } else {
+        $database = get('db_name');
+        $filename = parse('{{release_name}}.sql.tgz');
+    }
+    run("mysqldump $database > dump.sql");
     run("tar cfz $filename dump.sql");
     run('rm -f dump.sql');
     return $filename;
