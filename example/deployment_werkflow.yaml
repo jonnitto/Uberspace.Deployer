@@ -20,6 +20,7 @@ jobs:
     steps:
       - name: Set environment variables
         run: echo "stage=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
       - name: Setup deployment
         uses: tallyb/deployments@0.5.0
         id: deployment
@@ -102,8 +103,10 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           status: ${{ job.status }}
+          mention: here
+          if_mention: failure
+          job_name: Deploy
           text: '*Deployment ${{ job.status }}:* <${{ github.event.repository.git_url }}|${{ github.event.repository.name }}> to ${{ github.event.repository.homepage }}'
-          job_name: Deploy to Production
           author_name: <${{ github.event.sender.html_url }}|${{ github.event.head_commit.committer.name }}>
           fields: commit,message,took
           github_token: ${{ secrets.GITHUB_TOKEN }}
