@@ -132,15 +132,14 @@ task('install:import:database', static function (): void {
         $yaml = runLocally("./flow configuration:show --type Settings --path Neos.Flow.persistence.backendOptions");
         $settings = Yaml::parse($yaml);
         $port = $settings['port'] ?? '3306';
-        runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} > dump.sql");
-        runLocally('tar cfz dump.sql.tgz dump.sql');
+        runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} | xz > dump.sql.xz");
 
         // Upload file, extract it and remove dump files
-        upload('dump.sql.tgz', '{{release_path}}');
+        upload('dump.sql.xz', '{{release_path}}');
         cd('{{release_path}}');
-        run('tar xzOf dump.sql.tgz | mysql {{db_name}}');
-        run('rm -f dump.sql.tgz');
-        runLocally('rm -f dump.sql.tgz dump.sql');
+        run('xzcat dump.sql.xz | mysql {{db_name}}');
+        run('rm -f dump.sql.xz');
+        runLocally('rm -f dump.sql.xz');
     }
 })->setPrivate();
 

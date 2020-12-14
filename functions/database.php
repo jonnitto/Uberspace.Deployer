@@ -24,15 +24,34 @@ function goToBackupFolder(): string
 function createDbDump(?string $database = null): string
 {
     if (isset($database)) {
-        $filename = "{$database}.sql.tgz";
+        $filename = "{$database}.sql.xz";
     } else {
         $database = get('db_name');
-        $filename = parse('{{release_name}}.sql.tgz');
+        $filename = parse('{{release_name}}.sql.xz');
     }
-    run("mysqldump $database > dump.sql");
-    run("tar cfz $filename dump.sql");
-    run('rm -f dump.sql');
+    run("mysqldump $database | xz > $filename");
     return $filename;
+}
+
+/**
+ * Test if a dump exist
+ *
+ * @return boolean
+ */
+function testIfDumpExists(): bool
+{
+    return test('ls | grep "\.sql\.xz$" >/dev/null');
+}
+
+/**
+ * Get dumps as array
+ *
+ * @return array
+ */
+function getDumps(): array
+{
+    $items = run('ls *.sql.xz');
+    return preg_split("/\s/m", $items);
 }
 
 /**

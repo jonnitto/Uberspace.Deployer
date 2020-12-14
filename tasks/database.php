@@ -10,14 +10,13 @@ task('database:backup', static function () {
 desc('Download dump from the backup folder on the server');
 task('database:download:dump', static function () {
     cd(goToBackupFolder());
-    if (!test('ls | grep "\.sql\.tgz$" >/dev/null')) {
+    if (!testIfDumpExists()) {
         if (!askConfirmationInput('There is no backup available. Do you want to create one?', null, true)) {
             return;
         }
         dbBackup();
     }
-    $items = run('ls *.sql.tgz');
-    $items = preg_split("/\s/m", $items);
+    $items = getDumps();
     $lastIndex = count($items) - 1;
     if ($lastIndex > 0) {
         $question = 'Please choose the dumps (comma-seperated) you want to download to your project folder';
