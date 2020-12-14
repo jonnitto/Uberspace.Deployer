@@ -21,9 +21,9 @@ function symlinkDomain(): string
             return 'alreadyDefault';
         }
     } elseif (askConfirmation(" Should the default target on this server be set to $realDomain? ", true)) {
-        if ($defaultFolderIsPresent) {
+        if ($defaultFolderIsPresent || $defaultFolderIsSymbolicLink) {
             if (test('[ -d html.backup ]')) {
-                writebox('<strong>html</strong> is a folder and <strong>html.backup</strong> is also present<br>Please log in and check these folders.', 'red');
+                writebox('<strong>html</strong> and <strong>html.backup</strong> are present<br>Please log in and check these folders.', 'red');
                 return 'backupFolderPresent';
             }
             run('mv html html.backup');
