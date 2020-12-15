@@ -85,7 +85,7 @@ task('database:import', static function () {
  */
 
 task('database:backup:automatic', static function () {
-    if (run('{{flow_command}} doctrine:migrate --dry-run') !== 'No migrations to execute.') {
+    if (run('{{flow_command}} doctrine:migrate --dry-run 2>&1 || true') !== 'No migrations to execute.') {
         writebox('Because there are migrations to execute,<br>a backup of the database will be created…');
         dbBackup();
     }
