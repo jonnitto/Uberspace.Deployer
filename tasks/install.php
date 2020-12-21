@@ -30,7 +30,6 @@ task('install', [
     'flow:publish_resources',
     'deploy:remove_robotstxt',
     'server:symlink:add',
-    'deploy:flush_caches',
     'deploy:symlink',
     'cleanup',
     'server:php:restart',
