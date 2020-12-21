@@ -73,7 +73,7 @@ task('deploy:upload_assets_folder', static function (): void {
 
 task('deploy:flush_caches', static function (): void {
     $caches = get('redis_databases_with_numbers', false);
-    if (\is_array($caches)) {
+    if (\is_array($caches) && has('previous_release')) {
         foreach ($caches as $cache => $value) {
             run("{{flow_command}} cache:flushone $cache");
         }
