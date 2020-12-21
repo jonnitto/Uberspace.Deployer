@@ -48,7 +48,8 @@ task('git:commit', static function (): void {
     if (\is_string($issues)) {
         $output .= "\n\n" . \wordwrap($issues, $crop);
     }
-    runLocally("git commit -m '$output'");
+    $output = str_replace('"', '\"', $output);
+    runLocally("git commit -m \"$output\"");
 
     writeln(' ');
 })->once()->shallow();
