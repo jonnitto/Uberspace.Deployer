@@ -4,8 +4,7 @@
 
 These deployer scripts are built on top of [Deployer]. Most of the tasks are provided by this library already; this package adds just some optimization for the install process as well as the needed actions for deploying a project. There are also some helper tasks available, who should make your life as a developer a bit easier. Please run the deployer scripts only in your development environment, as Deployer connects automatically to the needed server.
 
-You can look at the [example] folder to look how to set up a deployment.
-The files should be saved on the root of you project.
+You can look at the [example] folder to look how to set up a deployment. The files should be saved on the root of you project.
 
 **For a list of all available commands enter `dep` in the command line**
 
@@ -53,18 +52,15 @@ domain.tld:
   slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
 ```
 
-The command `dep deploy` checks if Neos is installed and starts
-either the installation process or a fresh deployment.
+The command `dep deploy` checks if Neos is installed and starts either the installation process or a fresh deployment.
 
 > **Warning**  
 > Do not delete the file `Settings.yaml` in the `shared/Configuration/` folder.  
-> This file is used to check if Neos is already installed. If the installtion fails,
-> please remove the whole folder and start again.
+> This file is used to check if Neos is already installed. If the installtion fails, please remove the whole folder and start again.
 
 ## The `--composer_auth` input option for the tasks
 
-If you want to pass an authentication configuration (for private repositories)
-during `deploy` task, you can do this via the `--composer_auth` input option:
+If you want to pass an authentication configuration (for private repositories) during `deploy` task, you can do this via the `--composer_auth` input option:
 
 Example:
 
@@ -72,9 +68,7 @@ Example:
 dep install --composer_auth "http-basic.repo.packagist.com token XYZ"
 ```
 
-This option doesn't add the authentication global to composer on the host, just locally.
-If you want to install the authentication globally, connect via `dep ssh` to the server and enter
-(as an example) `composer config --global --auth http-basic.repo.packagist.com token XYZ` in the CLI.
+This option doesn't add the authentication global to composer on the host, just locally. If you want to install the authentication globally, connect via `dep ssh` to the server and enter (as an example) `composer config --global --auth http-basic.repo.packagist.com token XYZ` in the CLI.
 
 ## Add a domain
 
@@ -88,7 +82,7 @@ In the case you have to run a CLI PHP command, it is important to set the full p
 
 ## Publish the document root
 
-In order for a website to be accessible to visitors, it must be published to the correct directory. The default directory for all requests is `/var/www/virtual/<username>/html`. But you can also host multiple domains on one instance. You can create folders (and symlinks) in the form of `/var/www/virtual/<username>/<domain>`. Make sure your domain is setup and configured correctly. To use RewriteRules, you have to create a `.htaccess` file within the DocumentRoot with the following content: `RewriteBase /`
+In order for a website to be accessible to visitors, it must be published to the correct directory. The default directory for all requests is `/var/www/virtual/<username>/html`. But you can also host multiple domains on one instance. You can create folders (and symlinks) in the form of `/var/www/virtual/<username>/<domain>`. Make sure your domain is setup and configured correctly. To use RewriteRules, you have to create a `.htaccess` file within the DocumentRoot with the following content: `RewriteBase /`. In the [example] folder you'll find an example of an `.htaccess` file with dynamic `FLOW_CONTEXT` configuration based on the URL.
 
 > **Warning**  
 > Do not delete the `/html` folder. If this folder doesn’t exist, the RewriteRules  
@@ -195,9 +189,7 @@ domain.tld:
 <details>
   <summary>Deployment of staging and production to the same hosts</summary>
 
-If you want to have an staging and production instance on the same host, you should set up at least
-two branches, e.g. `staging` and `production`. It is recommended that you name the `stage` and the
-`branch` name the same.
+If you want to have an staging and production instance on the same host, you should set up at least two branches, e.g. `staging` and `production`. It is recommended that you name the `stage` and the `branch` name the same.
 
 ```yaml
 .base: &base
@@ -217,8 +209,7 @@ staging.domain.tld:
   redis_start_db_number: 10
 ```
 
-`redis_start_db_number` has to be set, because you don't want to share the same redis database for
-staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
+`redis_start_db_number` has to be set, because you don't want to share the same redis database for staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
 
 </details>
 
@@ -249,11 +240,9 @@ staging.domain.tld:
 <details>
   <summary>Automatic deployment with GitHub actions</summary>
 
-In the [example] folder you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments
-via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
+In the [example] folder you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
 
-This exmaple is just meant as an inspiration, you can (and should) edit this to fit you needs. In this workflows
-are some GitHub secrets you can set:
+This exmaple is just meant as an inspiration, you can (and should) edit this to fit you needs. In this workflows are some GitHub secrets you can set:
 
 | Secret              | Description                                                                                        |
 | ------------------- | -------------------------------------------------------------------------------------------------- |
@@ -303,15 +292,11 @@ upload_assets_folder:
 
 #### `db_name` & `database` (string)
 
-If Neos is already installed, it will use the flow command `configuration:show` to get the database name.
-Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username
-from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos`
-and also (if set) the name of the `stage`.
+If Neos is already installed, it will use the flow command `configuration:show` to get the database name. Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos` and also (if set) the name of the `stage`.
 
 #### `remove_robots_txt` (bool)
 
-With Neos.Seo, the robots.txt gets included in Neos and enables automatic sitemap links and other features.
-You can read more about this [feature here][seo robots.txt]. Defaults to `true`
+With Neos.Seo, the robots.txt gets included in Neos and enables automatic sitemap links and other features. You can read more about this [feature here][seo robots.txt]. Defaults to `true`
 
 #### `redis_start_db_number` (integer)
 
@@ -338,8 +323,7 @@ redis_databases:
 
 #### redis_databases_with_numbers (array)
 
-This sets the database names (based on `redis_databases`) with the corresponding
-number (based on `redis_start_db_number`)
+This sets the database names (based on `redis_databases`) with the corresponding number (based on `redis_start_db_number`)
 
 ```yaml
 redis_databases_with_numbers:
