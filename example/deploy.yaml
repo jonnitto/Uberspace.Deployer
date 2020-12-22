@@ -1,5 +1,5 @@
-# Install: dep install
-# Deploy: dep deploy
+# To start a deployment or the
+# installation run `dep deploy`
 
 # The target domain
 domain.tld:

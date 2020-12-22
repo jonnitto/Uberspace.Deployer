@@ -93,3 +93,13 @@ function getLength(?string $content = null): int
     }
     return \grapheme_strlen(\strip_tags($content));
 }
+
+/**
+ * Return true if Neos is already installed
+ *
+ * @return bool
+ */
+function neosIsInstalled(): bool
+{
+    return test('[ -f {{deploy_path}}/shared/Configuration/Settings.yaml ]');
+}

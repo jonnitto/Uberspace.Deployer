@@ -43,8 +43,8 @@ Create a file with the name `deploy.yaml` with following content and edit it fol
 - Add the `slack_webhook`. (optional) [You can register it here][slack webhook]
 
 ```yaml
-# Install: dep install
-# Deploy: dep deploy
+# To start a deployment or the
+# installation run `dep deploy`
 
 domain.tld:
   hostname: __SERVER__.uberspace.de
@@ -53,13 +53,18 @@ domain.tld:
   slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
 ```
 
-You can start the installation with `dep install` and follow the screen instructions.  
-After this intial installation you can run `dep deploy` to make a fresh deployment.
+The command `dep deploy` checks if Neos is installed and starts
+either the installation process or a fresh deployment.
+
+> **Warning**  
+> Do not delete the file `Settings.yaml` in the `shared/Configuration/` folder.  
+> This file is used to check if Neos is already installed. If the installtion fails,
+> please remove the whole folder and start again.
 
 ## The `--composer_auth` input option for the tasks
 
-If you want to pass an authentication configuration (for private repositories) during the `install` or `deploy` task,
-you can do this via the `--composer_auth` input option:
+If you want to pass an authentication configuration (for private repositories)
+during `deploy` task, you can do this via the `--composer_auth` input option:
 
 Example:
 
@@ -120,59 +125,55 @@ SetEnvIf Host \.prod$ FLOW_CONTEXT=Production/Local
 
 Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep` or `dep list`
 
-| Command                     | Description                                                                   |
-| --------------------------- | ----------------------------------------------------------------------------- |
-| **Main tasks**              |                                                                               |
-| `deploy`                    | Deploy your project                                                           |
-| `install`                   | Initialize installation                                                       |
-| `rollback`                  | Rollback to previous release                                                  |
-| `ssh`                       | Connect to host through ssh                                                   |
-| `flow`                      | Run any flow command                                                          |
-| `help`                      | Displays help for a command                                                   |
-| **Deploy tasks**            |                                                                               |
-| `deploy`                    | Deploy your project                                                           |
-| `deploy:unlock`             | Unlock deploy                                                                 |
-| **Install tasks**           |                                                                               |
-| `install`                   | Initialize installation                                                       |
-| `install:import`            | Import your local database and persistent resources to the server             |
-| **Database task**           |                                                                               |
-| `database:backup`           | Create a backup from the current database on the server                       |
-| `database:delete`           | Delete a database on the server                                               |
-| `database:download:current` | Download current database from the server                                     |
-| `database:download:dump`    | Download dump from the backup folder on the server                            |
-| `database:import`           | Import a database from the backup folder                                      |
-| `database:list`             | List all databases on the server                                              |
-| **Flow tasks**              |                                                                               |
-| `flow`                      | Run any flow command                                                          |
-| `flow:configuration`        | Edit shared configuration yaml files                                          |
-| `flow:create_admin`         | Create a new administrator                                                    |
-| `flow:flush_caches`         | Flush all caches                                                              |
-| `flow:node:migrate`         | List and run node migrations                                                  |
-| `flow:node:repair`          | Repair inconsistent nodes in the content repository                           |
-| `flow:publish_resources`    | Publish resources                                                             |
-| `flow:run_migrations`       | Apply database migrations                                                     |
-| `flow:site:import`          | Import the site from a package with a xml file                                |
-| **Git tasks**               |                                                                               |
-| `git:commit`                | Commit current changes to git                                                 |
-| `git:merge`                 | Merge branch                                                                  |
-| `git:ssh:key`               | Output private key for `SSH_PRIVATE_KEY` secret and upload public key to host |
-| `git:ssh:know_hosts`        | Output the know host for the `SSH_KNOWN_HOSTS` secret                         |
-| `git:tag`                   | Create release tag on git                                                     |
-| **Server tasks**            |                                                                               |
-| `server:cronjob`            | Edit the cronjobs                                                             |
-| `server:domain:add`         | Add a domain to uberspace                                                     |
-| `server:domain:list`        | List all domains and subdomains                                               |
-| `server:domain:remove`      | Remove a domain from uberspace                                                |
-| `server:ssh_key`            | Create and/or read the deployment key                                         |
-| `server:symlink:add`        | Set the symbolic link for this site                                           |
-| `server:symlink:list`       | List current symlinks on the web root                                         |
-| `server:symlink:remove`     | Remove a symbolic link from the web root                                      |
-| `server:php:restart`        | Restart PHP                                                                   |
-| `server:php:version`        | Set the PHP version on the server                                             |
-| **Config tasks**            |                                                                               |
-| `config:current`            | Show current paths                                                            |
-| `config:dump`               | Print host configuration                                                      |
-| `config:hosts`              | Print all hosts                                                               |
+| Command                     | Description                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| **Main tasks**              |                                                                                |
+| `deploy`                    | Deploy/install your project                                                    |
+| `rollback`                  | Rollback to previous release                                                   |
+| `ssh`                       | Connect to host through ssh                                                    |
+| `flow`                      | Run any flow command                                                           |
+| `help`                      | Displays help for a command                                                    |
+| **Deploy tasks**            |                                                                                |
+| `deploy`                    | Deploy your project                                                            |
+| `deploy:unlock`             | Unlock deploy                                                                  |
+| **Database task**           |                                                                                |
+| `database:backup`           | Create a backup from the current database on the server                        |
+| `database:delete`           | Delete a database on the server                                                |
+| `database:download:current` | Download current database from the server                                      |
+| `database:download:dump`    | Download dump from the backup folder on the server                             |
+| `database:import`           | Import a database from the backup folder                                       |
+| `database:list`             | List all databases on the server                                               |
+| **Flow tasks**              |                                                                                |
+| `flow`                      | Run any flow command                                                           |
+| `flow:configuration`        | Edit shared configuration yaml files                                           |
+| `flow:create_admin`         | Create a new administrator                                                     |
+| `flow:flush_caches`         | Flush all caches                                                               |
+| `flow:import`               | Import your local content or a site from a package within DistributionPackages |
+| `flow:node:migrate`         | List and run node migrations                                                   |
+| `flow:node:repair`          | Repair inconsistent nodes in the content repository                            |
+| `flow:publish_resources`    | Publish resources                                                              |
+| `flow:run_migrations`       | Apply database migrations                                                      |
+| **Git tasks**               |                                                                                |
+| `git:commit`                | Commit current changes to git                                                  |
+| `git:merge`                 | Merge branch                                                                   |
+| `git:ssh:key`               | Output private key for `SSH_PRIVATE_KEY` secret and upload public key to host  |
+| `git:ssh:know_hosts`        | Output the know host for the `SSH_KNOWN_HOSTS` secret                          |
+| `git:tag`                   | Create release tag on git                                                      |
+| **Server tasks**            |                                                                                |
+| `server:cronjob`            | Edit the cronjobs                                                              |
+| `server:domain:add`         | Add a domain to uberspace                                                      |
+| `server:domain:list`        | List all domains and subdomains                                                |
+| `server:domain:remove`      | Remove a domain from uberspace                                                 |
+| `server:ssh_key`            | Create and/or read the deployment key                                          |
+| `server:symlink:add`        | Set the symbolic link for this site                                            |
+| `server:symlink:list`       | List current symlinks on the web root                                          |
+| `server:symlink:remove`     | Remove a symbolic link from the web root                                       |
+| `server:php:restart`        | Restart PHP                                                                    |
+| `server:php:version`        | Set the PHP version on the server                                              |
+| **Config tasks**            |                                                                                |
+| `config:current`            | Show current paths                                                             |
+| `config:dump`               | Print host configuration                                                       |
+| `config:hosts`              | Print all hosts                                                                |
 
 ## Slack notifications
 

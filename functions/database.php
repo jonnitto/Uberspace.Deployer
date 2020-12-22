@@ -2,6 +2,8 @@
 
 namespace Deployer;
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Go to the backup folder and create the folder if it doesn't exist'
  *
@@ -97,4 +99,25 @@ function dbBackup(): void
     foreach ($backups as $backup) {
         run("{$sudo}rm -f {{db_backup_folder}}/$backup", $runOpts);
     }
+}
+
+/**
+ * Upload dump from local database to the server and import it
+ *
+ * @return void
+ */
+function importLocalDb(): void
+{
+    // Create a dump from the local installation
+    $yaml = runLocally("./flow configuration:show --type Settings --path Neos.Flow.persistence.backendOptions");
+    $settings = Yaml::parse($yaml);
+    $port = $settings['port'] ?? '3306';
+    runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} | xz > dump.sql.xz");
+
+    // Upload file, extract it and remove dump files
+    upload('dump.sql.xz', '{{release_path}}');
+    cd('{{release_path}}');
+    run('xzcat dump.sql.xz | mysql {{db_name}}');
+    run('rm -f dump.sql.xz');
+    runLocally('rm -f dump.sql.xz');
 }

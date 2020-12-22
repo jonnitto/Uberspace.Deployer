@@ -3,7 +3,17 @@
 namespace Deployer;
 
 desc('Deploy your Neos project');
-task('deploy', [
+task('deploy', static function (): void {
+    $task = neosIsInstalled() ? 'deploy:tasks' : 'install';
+    invoke($task);
+})->shallow();
+
+
+/**
+ * Private tasks
+ */
+
+task('deploy:tasks', [
     'slack:notify',
     'deploy:info',
     'deploy:prepare',
@@ -28,13 +38,7 @@ task('deploy', [
     'cleanup',
     'success',
     'slack:notify:success',
-])->shallow();
-
-
-
-/**
- * Private tasks
- */
+])->shallow()->setPrivate();
 
 task('deploy:git_config', static function (): void {
     cd('{{release_path}}');

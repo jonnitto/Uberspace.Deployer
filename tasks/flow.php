@@ -35,32 +35,25 @@ task('flow:node:migrate', static function (): void {
     writeln('');
 })->shallow();
 
-desc('Import the site from a package with a xml file');
-task('flow:site:import', static function (): void {
-    $path = '{{release_path}}/DistributionPackages';
-    if (test("[ -d $path ]")) {
-        cd($path);
-    } else {
-        cd('{{release_path}}/Packages/Sites');
+desc('Import your local content or a site from a package within DistributionPackages');
+task('flow:import', static function (): void {
+    $importDatabase = askConfirmation(' Do you want to import your local database? ', true);
+    $importResources = askConfirmation(' Do you want to import your local persistent resources? ', true);
+
+    if (!$importDatabase && !$importResources && askConfirmation(' Do you want to import the site from a package with a xml file? ', true)) {
+        importSiteFromXml();
+        return;
     }
 
-    $packages = run('ls -d */ | cut -f1 -d"/"');
-    if (!$packages) {
-        throw new \Exception('No packages found');
+    if ($importDatabase) {
+        writeln('Import database…');
+        importLocalDb();
     }
-    $packagesArray = \explode("\n", $packages);
-    $package = $packagesArray[0];
-
-    if (\count($packagesArray) > 1) {
-        $package = askChoiceln(
-            'Please choose the package with the content you want to import',
-            $packagesArray
-        );
+    if ($importResources) {
+        writeln('Import persistent resources…');
+        uploadPersistentResources();
     }
-
-    writebox("Import the content from <strong>$package</strong>", 'blue');
-    run("{{flow_command}} site:import --package-key $package", ['timeout' => null, 'tty' => true]);
-})->shallow();
+});
 
 desc('Edit shared configuration yaml files');
 task('flow:configuration', static function (): void {

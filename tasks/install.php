@@ -10,7 +10,6 @@ task('install', [
     'deploy:prepare',
     'deploy:lock',
     'install:info',
-    'install:check',
     'server:ssh_key',
     'install:wait',
     'server:php:version',
@@ -25,7 +24,7 @@ task('install', [
     'deploy:upload_assets_folder',
     'install:settings',
     'install:caches',
-    'install:import',
+    'flow:import',
     'flow:run_migrations',
     'flow:publish_resources',
     'deploy:remove_robotstxt',
@@ -35,13 +34,8 @@ task('install', [
     'server:php:restart',
     'deploy:unlock',
     'install:success',
-])->shallow();
+])->shallow()->setPrivate();
 
-desc('Import your local database and persistent resources to the server');
-task('install:import', [
-    'install:import:database',
-    'install:import:resources'
-]);
 
 /**
  * Private tasks
@@ -49,12 +43,6 @@ task('install:import', [
 
 task('install:info', static function (): void {
     writebox('✈︎ Installing <strong>' . getRealHostname() . '</strong> on <strong>{{hostname}}</strong>', 'blue');
-})->shallow()->setPrivate();
-
-task('install:check', static function (): void {
-    if (test('[ -f {{deploy_path}}/shared/Configuration/Settings.yaml ]')) {
-        throw new \Exception("Neos seems already installed \nPlease remove the whole Neos folder to start over again.");
-    }
 })->shallow()->setPrivate();
 
 task('install:wait', static function (): void {
@@ -125,42 +113,6 @@ task('install:caches', static function (): void {
     run("echo '$yaml' > {{release_path}}/Configuration/Caches.yaml");
 })->setPrivate();
 
-task('install:import:database', static function (): void {
-    if (askConfirmation(' Do you want to import your local database? ', true)) {
-        // Create a dump from the local installation
-        $yaml = runLocally("./flow configuration:show --type Settings --path Neos.Flow.persistence.backendOptions");
-        $settings = Yaml::parse($yaml);
-        $port = $settings['port'] ?? '3306';
-        runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} | xz > dump.sql.xz");
-
-        // Upload file, extract it and remove dump files
-        upload('dump.sql.xz', '{{release_path}}');
-        cd('{{release_path}}');
-        run('xzcat dump.sql.xz | mysql {{db_name}}');
-        run('rm -f dump.sql.xz');
-        runLocally('rm -f dump.sql.xz');
-    }
-})->setPrivate();
-
-task('install:import:resources', static function (): void {
-    if (askConfirmation(' Do you want to import your local persistent resources? ', true)) {
-        runLocally("COPYFILE_DISABLE=1 tar cfz Resources.tgz Data/Persistent/Resources", ['timeout' => null]);
-        upload('Resources.tgz', '{{deploy_path}}/shared');
-
-        // Decompress the Neos resources on the server and delete the compressed files
-        cd('{{deploy_path}}/shared');
-        run('tar xf Resources.tgz', ['timeout' => null]);
-        run('rm -f Resources.tgz');
-        runLocally('rm -f Resources.tgz');
-
-        $group = run('id -g -n');
-        cd('{{release_path}}/Data/Persistent/Resources');
-        writeln('Setting file permissions per file, this might take a while ...');
-        run("chown -R {{user}}:{$group} .");
-        run('find . -type d -exec chmod 775 {} \;');
-        run("find . -type f \! \( -name commit-msg -or -name '*.sh' \) -exec chmod 664 {} \;");
-    }
-})->setPrivate();
 
 task('install:success', static function (): void {
     $stage = has('stage') ? ' {{stage}}' : '';
