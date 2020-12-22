@@ -1,0 +1,190 @@
+<If "%{HTTP_HOST} =~ /(^staging\.|\.uber\.space)/">
+    Order Deny,Allow
+    Deny from all
+    AuthType Basic
+    AuthName "Restricted Access"
+    AuthBasicProvider file
+    AuthUserFile /var/www/virtual/__YOUR_UBERSPACE_USERNAME__/.htpasswd
+    Require valid-user
+    Satisfy any
+</If>
+
+AddDefaultCharset utf-8
+
+# Dynamic context configuration:
+SetEnvIf Host \.test$ FLOW_CONTEXT=Development
+SetEnvIf Host \.prod$ FLOW_CONTEXT=Production/Local
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{HTTP_HOST} !\.test$
+    RewriteCond %{HTTP_HOST} !\.prod$
+    RewriteCond %{HTTP_HOST} \.uber\.space$ [OR]
+    RewriteCond %{HTTP_HOST} ^staging\.
+    RewriteRule (.*) $1 [E=FLOW_CONTEXT:Production/Staging]
+
+    RewriteCond %{HTTP_HOST} !\.test$
+    RewriteCond %{HTTP_HOST} !\.prod$
+    RewriteCond %{HTTP_HOST} !\.uber\.space$
+    RewriteCond %{HTTP_HOST} !^staging\.
+    RewriteRule (.*) $1 [E=FLOW_CONTEXT:Production/Live]
+
+</IfModule>
+
+# If the root path is not the parent of the Web directory,
+# Flow's root path must be specified manually:
+# SetEnv FLOW_ROOTPATH /var/www/myapp/
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 seconds"
+    ExpiresByType image/x-icon "access plus 604800 seconds"
+    ExpiresByType image/jpeg "access plus 604800 seconds"
+    ExpiresByType image/png "access plus 604800 seconds"
+    ExpiresByType image/gif "access plus 604800 seconds"
+    ExpiresByType image/svg+xml "access plus 604800 seconds"
+    ExpiresByType application/x-shockwave-flash "access plus 604800 seconds"
+    ExpiresByType text/css "access plus 604800 seconds"
+    ExpiresByType text/javascript "access plus 604800 seconds"
+    ExpiresByType application/x-javascript "access plus 604800 seconds"
+#  ExpiresByType text/html "access plus 600 seconds"
+#  ExpiresByType application/xhtml+xml "access plus 600 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ico|jpe?g|png|gif|swf|css|js|mjs)$">
+        Header set Cache-Control "max-age=604800, private"
+    </FilesMatch>
+    <FilesMatch "\.(x?html?|php)$">
+        Header set Cache-Control "private, must-revalidate"
+    </FilesMatch>
+
+    # Rules to correctly serve gzip compressed CSS and JS files.
+    # Requires both mod_rewrite and mod_headers to be enabled.
+    # Serve brotli compressed CSS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} br
+    RewriteCond %{REQUEST_FILENAME}\.br -s
+    RewriteRule ^(.*)\.css $1\.css\.br [QSA]
+
+    # Serve gzip compressed CSS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+
+    # Serve brotli compressed JS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} br
+    RewriteCond %{REQUEST_FILENAME}\.br -s
+    RewriteRule ^(.*)\.js $1\.js\.br [QSA]
+
+    # Serve gzip compressed JS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+
+    # Serve brotli compressed MJS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} br
+    RewriteCond %{REQUEST_FILENAME}\.br -s
+    RewriteRule ^(.*)\.mjs $1\.mjs\.br [QSA]
+
+    # Serve gzip compressed   files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.mjs $1\.mjs\.gz [QSA]
+
+    # Serve brotli compressed SVG files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} br
+    RewriteCond %{REQUEST_FILENAME}\.br -s
+    RewriteRule ^(.*)\.svg $1\.svg\.br [QSA]
+
+    # Serve gzip compressed SVG files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.svg $1\.svg\.gz [QSA]
+
+    # Serve correct content types, and prevent mod_deflate double gzip.
+    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+    RewriteRule \.css\.br$ - [T=text/css,E=no-gzip:1]
+    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule \.js\.br$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule \.mjs\.gz$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule \.mjs\.br$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule \.svg\.gz$ - [T=image/svg+xml,E=no-gzip:1]
+    RewriteRule \.svg\.br$ - [T=image/svg+xml,E=no-gzip:1]
+
+    <FilesMatch "(\.js\.gz|\.mjs\.gz|\.css\.gz|\.svg\.gz)$">
+      # Serve correct encoding type.
+      Header set Content-Encoding gzip
+      # Force proxies to cache gzipped & non-gzipped css/js/svg files separately.
+      Header append Vary Accept-Encoding
+    </FilesMatch>
+    <FilesMatch "(\.js\.br|\.mjs\.br|\.css\.br|\.svg\.br)$">
+      # Serve correct encoding type.
+      Header set Content-Encoding br
+      # Force proxies to cache gzipped & non-gzipped css/js/svg files separately.
+      Header append Vary Accept-Encoding
+    </FilesMatch>
+</IfModule>
+
+# Deflate caching
+
+AddType image/svg+xml .svg
+AddOutputFilterByType DEFLATE image/svg+xml
+
+AddType otf/font .otf
+AddOutputFilterByType DEFLATE otf/font
+
+AddType woff/font .woff
+AddOutputFilterByType DEFLATE woff/font
+
+<IfModule mod_rewrite.c>
+
+    # Set flag so we know URL rewriting is available
+    SetEnv FLOW_REWRITEURLS 1
+
+    # You will have to change the path in the following option if you
+    # experience problems while your installation is located in a subdirectory
+    # of the website root.
+    RewriteBase /
+
+    # Force www
+    RewriteCond %{HTTP_HOST} !\.test$
+    RewriteCond %{HTTP_HOST} !\.prod$
+    RewriteCond %{HTTP_HOST} !\.uber\.space$
+    RewriteCond %{HTTP_HOST} !^staging\. [NC]
+    RewriteCond %{HTTP_HOST} !^www\. [NC]
+    RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # # Stop rewrite processing no matter if a package resource etc. exists or not
+    # RewriteRule ^(_Resources/Packages/|favicon\.ico) - [L]
+
+    # Use Neos robots.txt
+    RewriteCond %{REQUEST_URI} ^/robots\.txt
+    RewriteRule (.*) index.php [L]
+
+    # Stop rewrite process if the path points to a static file anyway
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -l [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule .* - [L]
+
+    # Continue only if the file/symlink/directory does not exist
+    RewriteRule (.*) index.php
+
+</IfModule>
+
+<IfModule mod_negotiation.c>
+
+    # prevents Apache's automatic file negotiation, it breaks resource URLs
+    Options -MultiViews
+
+</IfModule>
+
+<IfModule mod_setenvif.c>
+
+    # Redirect authorization header when PHP is running as CGI
+    SetEnvIfNoCase Authorization "Basic ([a-zA-Z0-9\+/=]+)" REMOTE_AUTHORIZATION=$0
+
+</IfModule>
+
+ErrorDocument 500 "<h1>Application Error</h1><p>The Flow application could not be launched.</p>"
