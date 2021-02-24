@@ -22,5 +22,12 @@
             "/CODE_OF_CONDUCT.md",
             "/LICENSE"
         ]
+    },
+    "extra": {
+        "marketplace-account": "me@jonnitto.ch",
+        "installer-name": "Uberspace.Deployer",
+        "neos": {
+            "package-key": "Uberspace.Deployer"
+        }
     }
 }
