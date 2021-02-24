@@ -2,4 +2,4 @@
 
 namespace Deployer;
 
-require_once 'Packages/Libraries/jonnitto/uberspace-deployer/neos.php';
+require_once 'Build/Uberspace.Deployer/neos.php';
