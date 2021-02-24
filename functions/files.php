@@ -9,15 +9,12 @@ namespace Deployer;
  */
 function uploadPersistentResources(): void
 {
-    runLocally("COPYFILE_DISABLE=1 tar cfz Resources.tgz Data/Persistent/Resources", ['timeout' => null]);
-    upload('Resources.tgz', '{{deploy_path}}/shared');
+    $folder = parse('{{release_path}}/Data/Persistent');
+    if (!test("[ -d $folder ]")) {
+        run("mkdir -p $folder");
+    }
 
-    // Decompress the Neos resources on the server and delete the compressed files
-    cd('{{deploy_path}}/shared');
-    run('tar xf Resources.tgz', ['timeout' => null]);
-    run('rm -f Resources.tgz');
-    runLocally('rm -f Resources.tgz');
-
+    upload('Data/Persistent/Resources', $folder);
     $group = run('id -g -n');
     cd('{{release_path}}/Data/Persistent/Resources');
     writeln('Setting file permissions per file, this might take a while ...');
@@ -31,7 +28,8 @@ function uploadPersistentResources(): void
  *
  * @return void
  */
-function importSiteFromXml(): void {
+function importSiteFromXml(): void
+{
     $path = '{{release_path}}/DistributionPackages';
     if (test("[ -d $path ]")) {
         cd($path);
