@@ -187,3 +187,21 @@ desc('Remove a symbolic link from the web root');
 task('server:symlink:remove', static function (): void {
     removeSymlink();
 })->shallow();
+
+desc('Output the IP addresses for the host');
+task('server:dns', static function (): void {
+    $ipv4 = runLocally('dig @1.1.1.1 {{hostname}} A +short');
+    $ipv6 = runLocally('dig @1.1.1.1 {{hostname}} AAAA +short');
+    writeln('');
+    writeln('');
+    writeln('<info> Following DNS records need to be set: </info>');
+    writeln('');
+    $table = new Table(output());
+    $table->setRows([
+        ['A', $ipv4],
+        ['AAAA', $ipv6],
+    ]);
+    $table->render();
+    writeln('');
+    writeln('');
+})->shallow();

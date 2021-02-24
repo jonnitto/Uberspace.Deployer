@@ -155,6 +155,7 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `git:tag`                   | Create release tag on git                                                      |
 | **Server tasks**            |                                                                                |
 | `server:cronjob`            | Edit the cronjobs                                                              |
+| `server:dns`                | Output the IP addresses for the `A` and `AAAA` record                          |
 | `server:domain:add`         | Add a domain to uberspace                                                      |
 | `server:domain:list`        | List all domains and subdomains                                                |
 | `server:domain:remove`      | Remove a domain from uberspace                                                 |
