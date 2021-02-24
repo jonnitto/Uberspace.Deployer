@@ -1,7 +1,7 @@
 {
     "name": "jonnitto/uberspace-deployer",
     "description": "Unofficial deployer recipes for Uberspace interacting with Neos CMS",
-    "type": "library",
+    "type": "neos-build",
     "license": "MIT",
     "authors": [
         {
@@ -22,5 +22,12 @@
             "/CODE_OF_CONDUCT.md",
             "/LICENSE"
         ]
+    },
+    "extra": {
+        "marketplace-account": "me@jonnitto.ch",
+        "installer-name": "Uberspace.Deployer",
+        "neos": {
+            "package-key": "Uberspace.Deployer"
+        }
     }
 }
