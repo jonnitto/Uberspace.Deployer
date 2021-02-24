@@ -1,7 +1,7 @@
 {
     "name": "jonnitto/uberspace-deployer",
     "description": "Unofficial deployer recipes for Uberspace interacting with Neos CMS",
-    "type": "library",
+    "type": "neos-build",
     "license": "MIT",
     "authors": [
         {
