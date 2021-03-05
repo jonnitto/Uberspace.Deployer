@@ -27,7 +27,6 @@ task('install', [
     'flow:import',
     'flow:run_migrations',
     'flow:publish_resources',
-    'deploy:remove_robotstxt',
     'server:symlink:add',
     'deploy:symlink',
     'cleanup',

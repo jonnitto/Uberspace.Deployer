@@ -295,10 +295,6 @@ upload_assets_folder:
 
 If Neos is already installed, it will use the flow command `configuration:show` to get the database name. Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos` and also (if set) the name of the `stage`.
 
-#### `remove_robots_txt` (bool)
-
-With Neos.Seo, the robots.txt gets included in Neos and enables automatic sitemap links and other features. You can read more about this [feature here][seo robots.txt]. Defaults to `true`
-
 #### `redis_start_db_number` (integer)
 
 Defaults to `2`
@@ -389,7 +385,7 @@ git_commit_types:
   Build: Build process update
   New: A new feature implementation
   Upgrade: Dependency upgrade
-  Chore: "Other changes (e.g.: refactoring)"
+  Chore: 'Other changes (e.g.: refactoring)'
 ```
 
 </details>
@@ -406,6 +402,5 @@ git_commit_types:
 [ssh manual on github]: https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 [uberspace dashboard]: https://dashboard.uberspace.de/dashboard/datasheet
 [config.php]: config.php
-[seo robots.txt]: https://neos-seo.readthedocs.io/en/stable/#dynamic-robots-txt
 [commitizen]: https://github.com/commitizen/cz-cli
 [social preview]: https://user-images.githubusercontent.com/4510166/101900466-d099fb80-3baf-11eb-9599-e5c721001736.png

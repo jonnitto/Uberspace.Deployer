@@ -158,10 +158,6 @@ AddOutputFilterByType DEFLATE woff/font
     # # Stop rewrite processing no matter if a package resource etc. exists or not
     # RewriteRule ^(_Resources/Packages/|favicon\.ico) - [L]
 
-    # Use Neos robots.txt
-    RewriteCond %{REQUEST_URI} ^/robots\.txt
-    RewriteRule (.*) index.php [L]
-
     # Stop rewrite process if the path points to a static file anyway
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -l [OR]

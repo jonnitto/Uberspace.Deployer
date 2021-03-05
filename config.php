@@ -25,8 +25,6 @@ set('upload_assets_folder', [
     'DistributionPackages/*/Resources/Public/Styles',
 ]);
 
-set('remove_robots_txt', true);
-
 set('db_name', static function (): string {
     try {
         $yaml = run('{{flow_command}} configuration:show --type Settings --path Neos.Flow.persistence.backendOptions');

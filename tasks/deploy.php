@@ -30,7 +30,6 @@ task('deploy:tasks', [
     'database:backup:automatic',
     'flow:run_migrations',
     'flow:publish_resources',
-    'deploy:remove_robotstxt',
     'deploy:symlink',
     'server:php:restart',
     'deploy:flush_caches',
@@ -81,12 +80,6 @@ task('deploy:flush_caches', static function (): void {
         foreach ($caches as $cache => $value) {
             run("{{flow_command}} cache:flushone $cache");
         }
-    }
-})->setPrivate();
-
-task('deploy:remove_robotstxt', static function (): void {
-    if (get('remove_robots_txt')) {
-        run('rm -f {{release_path}}/Web/robots.txt');
     }
 })->setPrivate();
 
