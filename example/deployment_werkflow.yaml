@@ -95,18 +95,3 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env_url: ${{ github.event.repository.homepage }}
-
-      - name: Slack notification
-        uses: 8398a7/action-slack@v3
-        if: always()
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          status: ${{ job.status }}
-          mention: here
-          if_mention: failure
-          job_name: Deploy
-          text: '*Deployment ${{ job.status }}:* <${{ github.event.repository.git_url }}|${{ github.event.repository.name }}> to ${{ github.event.repository.homepage }}'
-          author_name: <${{ github.event.sender.html_url }}|${{ github.event.head_commit.committer.name }}>
-          fields: commit,message,took
-          github_token: ${{ secrets.GITHUB_TOKEN }}
