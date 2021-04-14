@@ -85,7 +85,8 @@ task('database:import', static function () {
  */
 
 task('database:backup:automatic', static function () {
-    if (run('{{flow_command}} doctrine:migrate --dry-run 2>&1 || true') !== 'No migrations to execute.') {
+    $dryRun = run('{{flow_command}} doctrine:migrate --dry-run 2>&1 || true');
+    if (strpos($dryRun, 'Already at the latest version') === false && strpos($dryRun, 'No migrations to execute.') === false) {
         writebox('Because there are migrations to execute,<br>a backup of the database will be created…');
         dbBackup();
     }
