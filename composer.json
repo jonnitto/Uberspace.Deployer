@@ -27,7 +27,10 @@
         "marketplace-account": "me@jonnitto.ch",
         "installer-name": "Uberspace.Deployer",
         "neos": {
-            "package-key": "Uberspace.Deployer"
+            "package-key": "Uberspace.Deployer",
+            "installer-resource-folders": [
+                "/Installer/"
+            ]
         }
     }
 }
