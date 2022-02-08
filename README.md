@@ -149,7 +149,6 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `flow:run_migrations`       | Apply database migrations                                                      |
 | **Git tasks**               |                                                                                |
 | `git:commit`                | Commit current changes to git                                                  |
-| `git:merge`                 | Merge branch                                                                   |
 | `git:ssh:key`               | Output private key for `SSH_PRIVATE_KEY` secret and upload public key to host  |
 | `git:ssh:know_hosts`        | Output the know host for the `SSH_KNOWN_HOSTS` secret                          |
 | `git:tag`                   | Create release tag on git                                                      |

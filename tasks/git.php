@@ -70,50 +70,6 @@ task('git:tag', static function (): void {
     runLocally('git push origin --tags');
 })->once();
 
-
-desc('Merge branch');
-task('git:merge', static function (): void {
-    // Get the current branch
-    $currentBranch = runLocally('git branch --show-current');
-
-    // Get all other branches as array
-    $branchArray = \explode(" ", runLocally('echo $(git branch | cut -c 3-)'));
-    if (($key = \array_search($currentBranch, $branchArray)) !== false) {
-        \array_splice($branchArray, $key, 1);
-    }
-
-    // Set target branch
-    $targetBranch = askChoiceln("Merge $currentBranch to:", $branchArray);
-
-    writebox("Merge $currentBranch » $targetBranch", 'blue');
-    runLocally('git remote update');
-    $needStash = runLocally('git status -s');
-    if ($needStash) {
-        runLocally('git stash --all');
-    }
-
-    $local = runLocally('git rev-parse @');
-    $remote = runLocally('git rev-parse "@{u}"');
-    $base = runLocally('git merge-base @ "@{u}"');
-
-    if ($local !== $remote && $local === $base) {
-        // We need to pull the newest changes
-        runLocally('git pull');
-    }
-    if (runLocally('git cherry -v')) {
-        // We need to push the newest changes
-        runLocally('git push');
-    }
-    runLocally("git checkout $targetBranch");
-    runLocally('git pull');
-    runLocally("git merge --ff-only $currentBranch");
-    runLocally('git push');
-    runLocally("git checkout $currentBranch");
-    if ($needStash) {
-        runLocally('git stash pop');
-    }
-});
-
 desc('Output the know host for the SSH_KNOWN_HOSTS secret');
 task('git:ssh:know_hosts', static function (): void {
     writebox("Put this value as <strong>SSH_KNOWN_HOSTS</strong> secret on github:", 'blue');
