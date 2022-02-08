@@ -7,6 +7,8 @@
 namespace Deployer;
 
 use Deployer\Utility\Httpie;
+use function array_unique;
+use function is_array;
 
 /**
  * Private tasks
@@ -18,7 +20,7 @@ task('slack:notify', static function (): void {
     if (!$slackWebhook) {
         return;
     }
-    if (!\is_array($slackWebhook)) {
+    if (!is_array($slackWebhook)) {
         $slackWebhook = [$slackWebhook];
     }
 
@@ -29,7 +31,7 @@ task('slack:notify', static function (): void {
         'mrkdwn_in' => ['text'],
     ];
 
-    foreach (\array_unique($slackWebhook) as $hook) {
+    foreach (array_unique($slackWebhook) as $hook) {
         Httpie::post($hook)->body(['attachments' => [$attachment]])->send();
     }
 })->once()->shallow()->setPrivate();
@@ -40,7 +42,7 @@ task('slack:notify:success', static function (): void {
     if (!$slackWebhook) {
         return;
     }
-    if (!\is_array($slackWebhook)) {
+    if (!is_array($slackWebhook)) {
         $slackWebhook = [$slackWebhook];
     }
 
@@ -51,7 +53,7 @@ task('slack:notify:success', static function (): void {
         'mrkdwn_in' => ['text'],
     ];
 
-    foreach (\array_unique($slackWebhook) as $hook) {
+    foreach (array_unique($slackWebhook) as $hook) {
         Httpie::post($hook)->body(['attachments' => [$attachment]])->send();
     }
 })->once()->shallow()->setPrivate();
@@ -63,7 +65,7 @@ task('slack:notify:failure', static function (): void {
     if (!$slackWebhook) {
         return;
     }
-    if (!\is_array($slackWebhook)) {
+    if (!is_array($slackWebhook)) {
         $slackWebhook = [$slackWebhook];
     }
 
@@ -74,7 +76,7 @@ task('slack:notify:failure', static function (): void {
         'mrkdwn_in' => ['text'],
     ];
 
-    foreach (\array_unique($slackWebhook) as $hook) {
+    foreach (array_unique($slackWebhook) as $hook) {
         Httpie::post($hook)->body(['attachments' => [$attachment]])->send();
     }
 })->once()->shallow()->setPrivate();

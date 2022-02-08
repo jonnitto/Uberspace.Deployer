@@ -2,6 +2,8 @@
 
 namespace Deployer;
 
+use function preg_match_all;
+
 /**
  * Symlinks a site to a general folder of specific domain
  *

@@ -2,6 +2,10 @@
 
 namespace Deployer;
 
+use Exception;
+use function count;
+use function explode;
+
 /**
  * Upload persisten resources from local to the server
  *
@@ -39,12 +43,12 @@ function importSiteFromXml(): void
 
     $packages = run('ls -d */ | cut -f1 -d"/"');
     if (!$packages) {
-        throw new \Exception('No packages found');
+        throw new Exception('No packages found');
     }
-    $packagesArray = \explode("\n", $packages);
+    $packagesArray = \("\n", $packages);
     $package = $packagesArray[0];
 
-    if (\count($packagesArray) > 1) {
+    if (count($packagesArray) > 1) {
         $package = askChoiceln(
             'Please choose the package with the content you want to import',
             $packagesArray

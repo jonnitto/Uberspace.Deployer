@@ -4,6 +4,10 @@ namespace Deployer;
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Console\Helper\Table;
+use Exception;
+use function count;
+use function file_get_contents;
+use function is_array;
 
 desc('Initialize Neos installation');
 task('install', [
@@ -47,7 +51,7 @@ task('install:info', static function (): void {
 task('install:wait', static function (): void {
     writebox('Add this key as a deployment key in your repository under<br>{{repository_link}}/settings/keys', 'blue');
     if (!askConfirmation(' Press enter to continue ', true)) {
-        throw new \Exception('Installation canceled');
+        throw new Exception('Installation canceled');
     }
     writeln('');
 })->shallow()->setPrivate();
@@ -60,11 +64,11 @@ task('install:redis', static function (): void {
         run("mkdir $confFolder");
     }
     if (!test("[ -f $confFile ]")) {
-        $confTemplate = parse(\file_get_contents(__DIR__ . '/../template/Redis/conf'));
+        $confTemplate = parse(file_get_contents(__DIR__ . '/../template/Redis/conf'));
         run("echo '$confTemplate' > $confFile");
     }
     if (!test("[ -f $serviceIniFile ]")) {
-        $iniTemplate = \file_get_contents(__DIR__ . '/../template/Redis/redis.ini');
+        $iniTemplate = file_get_contents(__DIR__ . '/../template/Redis/redis.ini');
         run("echo '$iniTemplate' > $serviceIniFile");
     }
     run('supervisorctl reread');
@@ -84,7 +88,7 @@ task('install:php_settings', static function (): void {
 })->shallow()->setPrivate();
 
 task('install:settings', static function (): void {
-    $template = parse(\file_get_contents(__DIR__ . '/../template/Neos/Settings.yaml'));
+    $template = parse(file_get_contents(__DIR__ . '/../template/Neos/Settings.yaml'));
     run("echo '$template' > {{release_path}}/Configuration/Settings.yaml");
 })->setPrivate();
 
@@ -92,7 +96,7 @@ task('install:caches', static function (): void {
     $hostname = parse('/home/{{user}}/.redis/sock');
     $defaultLifetime = get('redis_defaultLifetime');
     $databases = get('redis_databases_with_numbers', false);
-    if (!\is_array($databases) || !\count($databases)) {
+    if (!is_array($databases) || !count($databases)) {
         return;
     }
     $entries = [];

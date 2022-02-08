@@ -4,6 +4,14 @@ namespace Deployer;
 
 use Deployer\Task\Context;
 
+use function array_unique;
+use function grapheme_strlen;
+use function preg_replace;
+use function strip_tags;
+use function strtolower;
+use function substr_count;
+use function trim;
+
 /**
  * Returns the real hostname (domain.tld)
  *
@@ -17,7 +25,7 @@ function getRealHostname(bool $prefix = false): string
     }
     // Check if the realDomain seems to have a subdomain
     $wwwDomain = 'www.' . $realHostname;
-    $defaultDomain = \substr_count($realHostname, '.') > 1 ? $realHostname : $wwwDomain;
+    $defaultDomain = substr_count($realHostname, '.') > 1 ? $realHostname : $wwwDomain;
     return $defaultDomain;
 }
 
@@ -32,7 +40,7 @@ function getAllHostnames(): array
     on(Deployer::get()->hosts, function ($host) use (&$hostnames) {
         $hostnames[] = $host->getRealHostname();
     });
-    return \array_unique($hostnames);
+    return array_unique($hostnames);
 }
 
 /**
@@ -46,7 +54,7 @@ function cleanUpWhitespaces(?string $string = null): ?string
     if (!$string) {
         return null;
     }
-    return \preg_replace('/\s+/', ' ', \trim($string));
+    return preg_replace('/\s+/', ' ', trim($string));
 }
 
 /**
@@ -57,7 +65,7 @@ function cleanUpWhitespaces(?string $string = null): ?string
  */
 function camelCaseToSnakeCase(string $input): string
 {
-    return \preg_replace('/[-\.]/', '_', \strtolower(\preg_replace('/(?<!^)[A-Z]/', '_$0', $input)));
+    return preg_replace('/[-\.]/', '_', strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input)));
 }
 
 /**
@@ -91,7 +99,7 @@ function getLength(?string $content = null): int
     if (!isset($content)) {
         return 0;
     }
-    return \grapheme_strlen(\strip_tags($content));
+    return grapheme_strlen(strip_tags($content));
 }
 
 /**

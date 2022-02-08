@@ -2,6 +2,9 @@
 
 namespace Deployer;
 
+use function implode;
+use function strpos;
+
 desc('Create a backup from the current database on the server');
 task('database:backup', static function () {
     dbBackup();

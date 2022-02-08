@@ -2,6 +2,12 @@
 
 namespace Deployer;
 
+use function array_merge;
+use function array_unique;
+use function count;
+use function glob;
+use function is_array;
+
 desc('Deploy your Neos project');
 task('deploy', static function (): void {
     $task = neosIsInstalled() ? 'deploy:tasks' : 'install';
@@ -56,14 +62,14 @@ task('deploy:composer_auth', static function (): void {
 
 task('deploy:upload_assets_folder', static function (): void {
     $setting = get('upload_assets_folder', false);
-    if (!\is_array($setting) || !\count($setting)) {
+    if (!is_array($setting) || !count($setting)) {
         return;
     }
-    $setting = \array_unique($setting);
+    $setting = array_unique($setting);
 
     $folders = [];
     foreach ($setting as $folder) {
-        $folders = \array_merge($folders, \glob($folder, GLOB_ONLYDIR));
+        $folders = array_merge($folders, glob($folder, GLOB_ONLYDIR));
     }
 
     foreach ($folders as $folder) {
@@ -76,7 +82,7 @@ task('deploy:upload_assets_folder', static function (): void {
 
 task('deploy:flush_caches', static function (): void {
     $caches = get('redis_databases_with_numbers', false);
-    if (\is_array($caches) && has('previous_release')) {
+    if (is_array($caches) && has('previous_release')) {
         foreach ($caches as $cache => $value) {
             run("{{flow_command}} cache:flushone $cache");
         }

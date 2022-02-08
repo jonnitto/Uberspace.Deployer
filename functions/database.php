@@ -3,6 +3,9 @@
 namespace Deployer;
 
 use Symfony\Component\Yaml\Yaml;
+use function array_shift;
+use function explode;
+use function preg_split;
 
 /**
  * Go to the backup folder and create the folder if it doesn't exist'
@@ -85,14 +88,14 @@ function dbBackup(): void
         // Keep unlimited dumps.
         return;
     }
-    $backups = \explode("\n", run('ls -dt *'));
+    $backups = explode("\n", run('ls -dt *'));
     $sudo = get('cleanup_use_sudo') ? 'sudo ' : '';
     $runOpts = [];
     if ($sudo) {
         $runOpts['tty'] = get('cleanup_tty', false);
     }
     while ($keep > 0) {
-        \array_shift($backups);
+        array_shift($backups);
         --$keep;
     }
 

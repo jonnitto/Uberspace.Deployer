@@ -3,6 +3,14 @@
 namespace Deployer;
 
 use Symfony\Component\Console\Helper\Table;
+use function array_diff;
+use function array_values;
+use function explode;
+use function implode;
+use function preg_match;
+use function sizeof;
+use function str_replace;
+use function substr_count;
 
 desc('Edit the cronjobs');
 task('server:cronjob', static function (): void {
@@ -42,16 +50,16 @@ task('server:ssh_key', static function (): void {
 
 desc('Set the PHP version on the server');
 task('server:php:version', static function (): void {
-    \preg_match('/(PHP [\d\.]+)/', run('php -v'), $currentVersion);
+    preg_match('/(PHP [\d\.]+)/', run('php -v'), $currentVersion);
     $currentVersion = $currentVersion[0];
 
-    \preg_match('/(\d\.\d)/', $currentVersion, $currentVersionShort);
+    preg_match('/(\d\.\d)/', $currentVersion, $currentVersionShort);
     $currentVersionShort = $currentVersionShort[0];
 
     writebox("<strong>Set PHP version on uberspace</strong><br><br><strong>Current version:</strong><br>$currentVersion", 'blue');
 
     $availableVersions = run('uberspace tools version list php');
-    $versionsList = \explode(\PHP_EOL, \str_replace('- ', '', $availableVersions));
+    $versionsList = explode(\PHP_EOL, str_replace('- ', '', $availableVersions));
     $version = askChoiceln('Please choose the desired version', $versionsList);
 
     if ($version !== $currentVersionShort) {
@@ -77,7 +85,7 @@ $currentEntry
 To cancel enter <strong>exit</strong> as answer", 'blue');
     // Check if the realHostname seems to have a subdomain
     $wwwDomain = 'www.' . $realHostname;
-    $defaultDomain = \substr_count($realHostname, '.') > 1 ? $realHostname : $wwwDomain;
+    $defaultDomain = substr_count($realHostname, '.') > 1 ? $realHostname : $wwwDomain;
     $suggestions = [$realHostname, $wwwDomain];
     $firstDomain = askDomain('Please enter the domain', $defaultDomain, $suggestions);
     if ($firstDomain === 'exit') {
@@ -96,7 +104,7 @@ To cancel enter <strong>exit</strong> as answer", 'blue');
         }
         writeln('');
     }
-    $outputDomains = \implode("\n", $domains);
+    $outputDomains = implode("\n", $domains);
     $ip = '';
     writebox('Adding domains, please wait...');
     foreach ($domains as $domain) {
@@ -118,7 +126,7 @@ $currentEntry
 
 To finish the setup, press enter or choose the last entry", 'blue');
 
-    $currentEntriesArray = \explode(\PHP_EOL, $currentEntry);
+    $currentEntriesArray = explode(\PHP_EOL, $currentEntry);
     $currentEntriesArray[] = 'Finish setup';
     $domains = [];
 
@@ -126,11 +134,11 @@ To finish the setup, press enter or choose the last entry", 'blue');
         if ($domain === 'Finish setup') {
             break;
         }
-        $currentEntriesArray = \array_values(\array_diff($currentEntriesArray, [$domain]));
+        $currentEntriesArray = array_values(array_diff($currentEntriesArray, [$domain]));
         $domains[] = $domain;
     }
     if (sizeof($domains)) {
-        $outputDomains = \implode("\n", $domains);
+        $outputDomains = implode("\n", $domains);
         writebox('Removing domains, please wait...');
         foreach ($domains as $domain) {
             run("uberspace web domain del $domain");

@@ -4,6 +4,11 @@ namespace Deployer;
 
 use Deployer\Task\Context;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use InvalidArgumentException;
+use function is_string;
+use function str_repeat;
+use function strlen;
+use function substr_count;
 
 /**
  * Ask the user to enter a domain
@@ -38,7 +43,7 @@ function askDomainWithDefaultAndSuggestions(string $question): string
     $previewDomain = parse('{{user}}.uber.space');
     $realDomain = getRealHostname();
     $wwwDomain = 'www.' . $realDomain;
-    $defaultDomain = \substr_count($realDomain, '.') > 1 ? $realDomain : $wwwDomain;
+    $defaultDomain = substr_count($realDomain, '.') > 1 ? $realDomain : $wwwDomain;
     $suggestions = [$realDomain, $wwwDomain, $previewDomain];
     return askDomain($question, $defaultDomain, $suggestions);
 }
@@ -61,7 +66,7 @@ function askConfirmationInput(string $question, ?string $questionIfTrue = null, 
     $placeholderQ1 = $q1Length < $q2Length ? $q2Length - $q1Length : 0;
     $placeholderQ2 = $q1Length > $q2Length ? $q1Length - $q2Length : 0;
 
-    $answer = askConfirmation(" $question " . \str_repeat(' ', $placeholderQ1), $default);
+    $answer = askConfirmation(" $question " . str_repeat(' ', $placeholderQ1), $default);
     if ($answer === false) {
         writeln("<comment> No </comment>\n");
         return false;
@@ -70,7 +75,7 @@ function askConfirmationInput(string $question, ?string $questionIfTrue = null, 
         writeln("<comment> Yes </comment>\n");
         return true;
     }
-    return askln($questionIfTrue . \str_repeat(' ', $placeholderQ2), $required);
+    return askln($questionIfTrue . str_repeat(' ', $placeholderQ2), $required);
 }
 
 /**
@@ -84,11 +89,11 @@ function askConfirmationInput(string $question, ?string $questionIfTrue = null, 
  */
 function askln(string $question, bool $required = false, ?string $default = null, bool $hidden = false, string $prefix = ''): ?string
 {
-    if (\is_string($default)) {
+    if (is_string($default)) {
         $default = parse($default);
     }
 
-    if (\strlen($prefix)) {
+    if (strlen($prefix)) {
         $prefix = " $prefix ";
     }
 
@@ -120,11 +125,11 @@ function askChoiceln(string $message, array $availableChoices, $default = null, 
     Context::required(__FUNCTION__);
     $message = parse($message);
     if (empty($availableChoices)) {
-        throw new \InvalidArgumentException('Available choices should not be empty');
+        throw new InvalidArgumentException('Available choices should not be empty');
     }
 
     if ($default !== null && !array_key_exists($default, $availableChoices)) {
-        throw new \InvalidArgumentException('Default choice is not available');
+        throw new InvalidArgumentException('Default choice is not available');
     }
 
     if (isQuiet()) {
@@ -137,7 +142,7 @@ function askChoiceln(string $message, array $availableChoices, $default = null, 
     $helper = Deployer::get()->getHelper('question');
     $message = "<question> $message" . (($default === null) ? "" : " [$default]") . " </question>";
     $length = getLength($message);
-    $placeholder = "<question>" . \str_repeat(' ', $length) . '</question>';
+    $placeholder = "<question>" . str_repeat(' ', $length) . '</question>';
 
     writeln($placeholder);
     writeln($message);

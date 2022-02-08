@@ -2,6 +2,11 @@
 
 namespace Deployer;
 
+use function compact;
+use function preg_split;
+use function str_repeat;
+use function str_replace;
+
 /**
  * Output a box with content to the console
  *
@@ -24,13 +29,13 @@ function writebox(string $content, ?string $bg = null, ?string $color = null): v
 
     // Replace strong with bold notation
     if ($useColors) {
-        $content = \str_replace(
+        $content = str_replace(
             ['<strong>', '</strong>'],
             ["<bg={$bg};fg={$color};options=bold>", '</>'],
             $content
         );
     } else {
-        $content = \str_replace(
+        $content = str_replace(
             ['<strong>', '</strong>'],
             ["<options=bold>", '</>'],
             $content
@@ -38,22 +43,22 @@ function writebox(string $content, ?string $bg = null, ?string $color = null): v
     }
 
     // Replace br tags with a linebreak
-    $contentArray = \preg_split('/(<br[^>]*>|\n)/i', $content);
+    $contentArray = preg_split('/(<br[^>]*>|\n)/i', $content);
     $contents = [];
     $maxLength = 0;
     foreach ($contentArray as $key => $string) {
         $length = getLength($string);
-        $contents[$key] = \compact('length', 'string');
+        $contents[$key] = compact('length', 'string');
         if ($length > $maxLength) {
             $maxLength = $length;
         }
     }
-    $placeholder = \str_repeat(' ', $maxLength);
+    $placeholder = str_repeat(' ', $maxLength);
 
     writeln('');
     writelnColored($placeholder, $bg, $color);
     foreach ($contents as $array) {
-        $space = \str_repeat(' ', $maxLength - $array['length']);
+        $space = str_repeat(' ', $maxLength - $array['length']);
         writelnColored($array['string'] . $space, $bg, $color);
     }
     writelnColored($placeholder, $bg, $color);

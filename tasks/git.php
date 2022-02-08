@@ -2,11 +2,24 @@
 
 namespace Deployer;
 
+use InvalidArgumentException;
+use function array_key_first;
+use function array_search;
+use function array_splice;
+use function count;
+use function date;
+use function explode;
+use function is_array;
+use function is_string;
+use function strpos;
+use function substr;
+use function wordwrap;
+
 desc('Commit current changes to git');
 task('git:commit', static function (): void {
     $types = get('git_commit_types');
-    if (!\is_array($types) || !\count($types)) {
-        throw new \InvalidArgumentException('`git_commit_types` should be an array and not empty');
+    if (!is_array($types) || !count($types)) {
+        throw new InvalidArgumentException('`git_commit_types` should be an array and not empty');
     }
 
     if (!runLocally('git diff --name-only --cached')) {
@@ -25,7 +38,7 @@ task('git:commit', static function (): void {
     $type = askChoiceln(
         'Select the type of change that you\'re committing',
         $types,
-        \array_key_first($types)
+        array_key_first($types)
     );
     writeln(' ');
     $type .= ':';
@@ -38,15 +51,15 @@ task('git:commit', static function (): void {
     }
     $issues = askConfirmationInput('Does this change affect any open issues?', 'Add issue references (e.g. "fix #123", "re #123".):');
 
-    $output = \substr("$type $short", 0, $crop);
-    if (\is_string($long)) {
-        $output .= "\n\n" . \wordwrap($long, $crop);
+    $output = substr("$type $short", 0, $crop);
+    if (is_string($long)) {
+        $output .= "\n\n" . wordwrap($long, $crop);
     }
-    if (\is_string($breaking)) {
-        $output .= "\n\n" . \wordwrap("BREAKING CHANGE: $breaking", $crop);
+    if (is_string($breaking)) {
+        $output .= "\n\n" . wordwrap("BREAKING CHANGE: $breaking", $crop);
     }
-    if (\is_string($issues)) {
-        $output .= "\n\n" . \wordwrap($issues, $crop);
+    if (is_string($issues)) {
+        $output .= "\n\n" . wordwrap($issues, $crop);
     }
     $output = str_replace('"', '\"', $output);
     runLocally("git commit -m \"$output\"");
@@ -57,9 +70,9 @@ task('git:commit', static function (): void {
 
 desc('Create release tag on git');
 task('git:tag', static function (): void {
-    $tag = \date('Y-m-d_T_H-i-s');
-    $day = \date('d.m.Y');
-    $time = \date('H:i:s');
+    $tag = date('Y-m-d_T_H-i-s');
+    $day = date('d.m.Y');
+    $time = date('H:i:s');
     $description = askln(
         'Add a description for the tag',
         false,
@@ -69,6 +82,50 @@ task('git:tag', static function (): void {
     runLocally("git tag -a -m '$description' '$tag'");
     runLocally('git push origin --tags');
 })->once();
+
+
+desc('Merge branch');
+task('git:merge', static function (): void {
+    // Get the current branch
+    $currentBranch = runLocally('git branch --show-current');
+
+    // Get all other branches as array
+    $branchArray = explode(" ", runLocally('echo $(git branch | cut -c 3-)'));
+    if (($key = array_search($currentBranch, $branchArray)) !== false) {
+        array_splice($branchArray, $key, 1);
+    }
+
+    // Set target branch
+    $targetBranch = askChoiceln("Merge $currentBranch to:", $branchArray);
+
+    writebox("Merge $currentBranch » $targetBranch", 'blue');
+    runLocally('git remote update');
+    $needStash = runLocally('git status -s');
+    if ($needStash) {
+        runLocally('git stash --all');
+    }
+
+    $local = runLocally('git rev-parse @');
+    $remote = runLocally('git rev-parse "@{u}"');
+    $base = runLocally('git merge-base @ "@{u}"');
+
+    if ($local !== $remote && $local === $base) {
+        // We need to pull the newest changes
+        runLocally('git pull');
+    }
+    if (runLocally('git cherry -v')) {
+        // We need to push the newest changes
+        runLocally('git push');
+    }
+    runLocally("git checkout $targetBranch");
+    runLocally('git pull');
+    runLocally("git merge --ff-only $currentBranch");
+    runLocally('git push');
+    runLocally("git checkout $currentBranch");
+    if ($needStash) {
+        runLocally('git stash pop');
+    }
+});
 
 desc('Output the know host for the SSH_KNOWN_HOSTS secret');
 task('git:ssh:know_hosts', static function (): void {
@@ -89,7 +146,7 @@ task('git:ssh:key', static function (): void {
     on(Deployer::get()->hosts, function ($host) use ($public) {
         $file = run("cat ~/.ssh/authorized_keys");
         $hostname = $host->getRealHostname();
-        if (\strpos($file, $public) === false) {
+        if (strpos($file, $public) === false) {
             run("echo '$public' >> ~/.ssh/authorized_keys");
             writebox("The public key was added to authorized_keys on the host $hostname", 'blue');
         }
