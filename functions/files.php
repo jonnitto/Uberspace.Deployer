@@ -45,7 +45,7 @@ function importSiteFromXml(): void
     if (!$packages) {
         throw new Exception('No packages found');
     }
-    $packagesArray = \("\n", $packages);
+    $packagesArray = explode("\n", $packages);
     $package = $packagesArray[0];
 
     if (count($packagesArray) > 1) {
