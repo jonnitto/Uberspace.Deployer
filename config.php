@@ -5,6 +5,10 @@ namespace Deployer;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 use Deployer\Exception\RuntimeException;
+use function getenv;
+use function is_array;
+use function preg_match;
+use function ucfirst;
 
 option('composer_auth', null, InputOption::VALUE_OPTIONAL, 'Add a composer authentification configuration');
 
@@ -51,14 +55,13 @@ set('redis_databases_with_numbers', static function (): array {
     $start = get('redis_start_db_number', 2);
     $databases = get('redis_databases', false);
     $array = [];
-    if (\is_array($databases)) {
+    if (is_array($databases)) {
         foreach ($databases as $index => $database) {
             $array[$database] = $start + $index;
         }
     }
     return $array;
 });
-
 
 // Composer specific
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --no-dev --optimize-autoloader');
@@ -69,7 +72,7 @@ set('bin/git', static function (): string {
 });
 
 set('repository_url_parts', static function (): array {
-    \preg_match(
+    preg_match(
         '/^(?:(?<user>[^@]*)@)?(?<host>[^:]*):(?<path>.*\/(?<short_name>.*))\.git$/',
         get('repository'),
         $urlParts
@@ -86,9 +89,9 @@ set('repository_link', static function (): string {
 });
 
 set('deploy_user', static function (): string {
-    $user = \getenv('GIT_AUTHOR_NAME');
+    $user = getenv('GIT_AUTHOR_NAME');
     if ($user === false) {
-        $user = \getenv('GIT_COMMITTER_NAME');
+        $user = getenv('GIT_COMMITTER_NAME');
         if ($user === false) {
             $getUserCommand = 'git config --get user.name';
             if (!testLocally("$getUserCommand 2>/dev/null || true")) {
@@ -112,13 +115,11 @@ set('git_commit_types', [
     'Chore'    => 'Other changes (e.g.: refactoring)',
 ]);
 
-
 // Connection specifc values
 set('port', 22);
 set('forwardAgent', false);
 set('multiplexing', true);
 set('ssh_key', get('repository_short_name'));
-
 
 // Server specifc values
 set('editor', 'nano');
@@ -130,7 +131,7 @@ set('db_backup_keep_dumps', 5);
 set('deploy_folder', static function (): string {
     $suffix = '';
     if (has('stage')) {
-        $suffix = "/" . \ucfirst(get('stage'));
+        $suffix = "/" . ucfirst(get('stage'));
     }
     return get('repository_short_name') . $suffix;
 });
@@ -142,7 +143,6 @@ set('db_password', static function (): string {
 set('release_name', static function (): string {
     return run('date +"%Y-%m-%d__%H-%M-%S"');
 });
-
 
 // Slack specifc values
 set('slack_application', static function (): string {
