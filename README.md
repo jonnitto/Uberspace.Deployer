@@ -2,17 +2,17 @@
 
 ![social preview]
 
-These deployer scripts are built on top of [Deployer]. Most of the tasks are provided by this library already; this package adds just some optimization for the install process as well as the needed actions for deploying a project. There are also some helper tasks available, who should make your life as a developer a bit easier. Please run the deployer scripts only in your development environment, as Deployer connects automatically to the needed server.
+These deployer scripts are built on top of [Deployer]. Most of the tasks are provided by this library already; this package adds just some optimization for the install process and the needed actions for deploying a project. Some helper tasks are available that should make your life as a developer a bit easier. Please run the deployer scripts only in your development environment, as Deployer connects automatically to the needed server.
 
-You can look at the [example] folder to look how to set up a deployment. The files should be saved on the root of you project.
+You can look at the [example] folder to look how to set up a deployment. The files should be saved at the root of your project.
 
-**For a list of all available commands enter `dep` in the command line**
+**For a list of all available commands, enter `dep` in the command line**
 
 ## Uberspace
 
-[Uberspace] is an awesome hosting provider from Germany. You can find theirs [complete manual here][uberspace manual].
+[Uberspace] is a superb hosting provider from Germany. You can find their [complete manual here][uberspace manual].
 
-First, you have to [register your own uberspace]. Then, add your SSh key to the admin-interface. If you don't know what SSH is, you can read more about this in the [SSH section in the uberspace manual][ssh manual on uberspace] or on the [SSH manual on github].
+First, you have to [register your own uberspace]. Then, add your SSh key to the admin interface. If you don't know what SSH is, you can read more about this in the [SSH section in the uberspace manual][ssh manual on uberspace] or on the [SSH manual on github].
 
 ## Installation of the deployment scripts
 
@@ -22,7 +22,7 @@ Enter this on the root of your project:
 composer require --dev jonnitto/uberspace-deployer
 ```
 
-Create a file with the name `deploy.php` with following content:
+Create a file with the name `deploy.php` with the following content:
 
 ```php
 <?php
@@ -33,10 +33,10 @@ require_once 'Build/Uberspace.Deployer/neos.php';
 
 ```
 
-Create a file with the name `deploy.yaml` with following content and edit it following points:
+Create a file with the name `deploy.yaml` with the following content and edit it following points:
 
 - Replace `domain.tld` with the corresponding domain, **without** `www.`
-- Replace `__SERVER__` with corresponding server name. You'll find the infos on the [uberspace dashboard].
+- Replace `__SERVER__` with the corresponding server name. You'll find the info on the [uberspace dashboard].
 - Replace `__USER__` with the corresponding uberspace username
 - Replace `__OWNER__/__REPOSITORY` with the corresponding repository
 - Add the `slack_webhook`. (optional) [You can register it here][slack webhook]
@@ -56,7 +56,7 @@ The command `dep deploy` checks if Neos is installed and starts either the insta
 
 > **Warning**  
 > Do not delete the file `Settings.yaml` in the `shared/Configuration/` folder.  
-> This file is used to check if Neos is already installed. If the installtion fails, please remove the whole folder and start again.
+> This file is used to check if Neos is already installed. If the installation fails, please remove the whole folder and start again.
 
 ## The `--composer_auth` input option for the tasks
 
@@ -72,31 +72,31 @@ This option doesn't add the authentication global to composer on the host, just 
 
 ## Add a domain
 
-The add a domain to you uberspace, you can either follow the instructions on the [uberspace manual]  
+The add a domain to your uberspace, you can either follow the instructions on the [uberspace manual]  
 or run the command `dep server:domain:add`.
 
 ## Cronjobs
 
-To edit the cronjobs on the server run the command `dep server:cronjob`.  
-In the case you have to run a CLI PHP command, it is important to set the full path to the PHP binary.
+To edit the cronjobs on the server, run the command `dep server:cronjob`.  
+In the case you have to run a CLI PHP command, it is essential to set the full path to the PHP binary.
 
 ## Publish the document root
 
-In order for a website to be accessible to visitors, it must be published to the correct directory. The default directory for all requests is `/var/www/virtual/<username>/html`. But you can also host multiple domains on one instance. You can create folders (and symlinks) in the form of `/var/www/virtual/<username>/<domain>`. Make sure your domain is setup and configured correctly. To use RewriteRules, you have to create a `.htaccess` file within the DocumentRoot with the following content: `RewriteBase /`. In the [example] folder you'll find an example of an `.htaccess` file with dynamic `FLOW_CONTEXT` configuration based on the URL.
+In order for a website to be accessible to visitors, it must be published in the correct directory. The default directory for all requests is `/var/www/virtual/<username>/html`. But you can also host multiple domains in one instance. You can create folders (and symlinks) in the form of `/var/www/virtual/<username>/<domain>`. Make sure your domain is set up and configured correctly. To use RewriteRules, you have to create a `.htaccess` file within the DocumentRoot with the following content: `RewriteBase /`. In the [example] folder, you'll find an example of an `.htaccess` file with a dynamic `FLOW_CONTEXT` configuration based on the URL.
 
 > **Warning**  
 > Do not delete the `/html` folder. If this folder doesn’t exist, the RewriteRules  
-> implementing the additional DocumentRoots don’t work, so all your domains will be unaccessable.
+> implementing the additional DocumentRoots don’t work, so all your domains will be unaccessible.
 
-You can use the command `dep server:symlink:add` to create a correct symlink
+You can use the command `dep server:symlink:add` to create a correct symlink.
 
 ## Set the DNS records
 
-To go live the `A` (IPv4) and the `AAAA` (IPv6) Records need to be set in the domain DNS settings. To find out which are the correct IP addresses you take a look at your [uberspace dashboard], or copy the addresses after the `dep server:domain:add` command.
+To go live, the `A` (IPv4) and the `AAAA` (IPv6) Records need to be set in the domain DNS settings. To find out which are the correct IP addresses, take a look at your [uberspace dashboard], or copy the addresses after the `dep server:domain:add` command.
 
 ## Set the Flow Context via `.htaccess`
 
-It is very important that you have set the `FLOW_CONTEXT` correctly.
+You must set the `FLOW_CONTEXT` correctly.
 
 Example:
 
@@ -171,8 +171,8 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 
 ## Slack notifications
 
-The parameter `slack_webhook` accepts beside an simple string also an array with strings.  
-With this you are able to post the notifictions to multiple channels.
+The parameter `slack_webhook` accepts an array with strings beside a simple string.  
+With this, you can post the notifications to multiple channels.
 
 Example:
 
@@ -189,7 +189,7 @@ domain.tld:
 <details>
   <summary>Deployment of staging and production to the same hosts</summary>
 
-If you want to have an staging and production instance on the same host, you should set up at least two branches, e.g. `staging` and `production`. It is recommended that you name the `stage` and the `branch` name the same.
+If you want to have a staging and production instance on the same host, you should set up at least two branches, e.g., `staging` and `production`. It is recommended that you name the `stage` and the `branch` name the same.
 
 ```yaml
 .base: &base
@@ -209,7 +209,7 @@ staging.domain.tld:
   redis_start_db_number: 10
 ```
 
-`redis_start_db_number` has to be set, because you don't want to share the same redis database for staging and prodution. You can read more about this in the [Default parameter](#default-parameter) section.
+`redis_start_db_number` has to be set because you don't want to share the same Redis database for staging and production. In the [Default parameter](#default-parameter) section, you can read more about this.
 
 </details>
 
@@ -240,22 +240,22 @@ staging.domain.tld:
 <details>
   <summary>Automatic deployment with GitHub actions</summary>
 
-In the [example] folder you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
+In the [example] folder, you'll find a file called `deployment_werkflow.yaml`. To enable automatic deployments via GitHub actions, you have to put a file like this in your repository under `.github/workflows/deploy.yaml`
 
-This exmaple is just meant as an inspiration, you can (and should) edit this to fit you needs. In this workflows are some GitHub secrets you can set:
+This example is just meant as an inspiration; you can (and should) edit this to fit your needs. In this workflows are some GitHub secrets you can set:
 
 | Secret              | Description                                                                                        |
 | ------------------- | -------------------------------------------------------------------------------------------------- |
 | `COMPOSER_AUTH`     | As described [above](#the---composer_auth-input-option-for-the-tasks)                              |
-| `SLACK_WEBHOOK_URL` | It is recommended to let GitHub hanlde the slack notifications                                     |
+| `SLACK_WEBHOOK_URL` | It is recommended to let GitHub handle the slack notifications                                     |
 | `SSH_KNOWN_HOSTS`   | Enter here the host from uberspace. You can output these with the command `dep git:ssh:know_hosts` |
-| `SSH_PRIVATE_KEY`   | Enter here the private key. You can ouput the private key with the command `dep git:ssh:key`       |
+| `SSH_PRIVATE_KEY`   | Enter here the private key. You can output the private key with the command `dep git:ssh:key`       |
 
 </details>
 
 ## Default parameter
 
-This package set some default parameter. All of them are defined in [config.php].  
+This package sets some default parameters. All of them are defined in [config.php].  
 You can override them in your `yaml` or directly in your `PHP` file.
 
 <details>
@@ -279,7 +279,7 @@ shared_dirs:
 #### `upload_assets_folder` (array)
 
 These folders (globbing-enabled) will get uploaded from the current installation.  
-Mostly used for rendered CSS & JS files, who you don't want in your repository  
+Primarily used for rendered CSS & JS files, which you don't want in your repository.  
 To disable the upload you can set this to false: `set('upload_assets_folder', false);` or in the `yaml` file: `upload_assets_folder: false`.  
 Defaults to
 
@@ -292,7 +292,7 @@ upload_assets_folder:
 
 #### `db_name` & `database` (string)
 
-If Neos is already installed, it will use the flow command `configuration:show` to get the database name. Otherwise, it will check if the value `database` is set and will use this as a prefix for the required username from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos` and also (if set) the name of the `stage`.
+If Neos is already installed, it will use the flow command `configuration:show` to get the database name. Otherwise, it will check if the value `database` is set and use this as a prefix for the required username from Uberspace. If nothing specific is set it will convert the repository name to camel case, append `_neos`, and also (if specified) the name of the `stage`.
 
 #### `redis_start_db_number` (integer)
 
@@ -373,7 +373,7 @@ This is set to the current date and time. Example: `2021-01-30__13-40-10`
 #### `git_commit_types` (array)
 
 You can set the types of commits for the command `git:commit`.  
-Per default it is based on [commitizen].
+Per default, it is based on [commitizen].
 
 ```yaml
 git_commit_types:
