@@ -111,12 +111,16 @@ function dbBackup(): void
  */
 function importLocalDb(): void
 {
-    // Create a dump from the local installation
-    $yaml = runLocally("./flow configuration:show --type Settings --path Neos.Flow.persistence.backendOptions");
-    $settings = Yaml::parse($yaml);
-    $port = $settings['port'] ?? '3306';
-    runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} | xz > dump.sql.xz");
-
+    if (get('ddev')) {
+        // Create a dump with ddev
+        runLocally("ddev export-db > dump.sql.xz");
+    } else {
+        // Create a dump from the local installation
+        $yaml = runLocally("./flow configuration:show --type Settings --path Neos.Flow.persistence.backendOptions");
+        $settings = Yaml::parse($yaml);
+        $port = $settings['port'] ?? '3306';
+        runLocally("mysqldump -h {$settings['host']} -P {$port} -u {$settings['user']} -p{$settings['password']} {$settings['dbname']} | xz > dump.sql.xz");
+    }
     // Upload file, extract it and remove dump files
     upload('dump.sql.xz', '{{release_path}}');
     cd('{{release_path}}');

@@ -169,6 +169,10 @@ Run these tasks with `dep COMMAND`. If you want to list all commands, enter `dep
 | `config:dump`               | Print host configuration                                                       |
 | `config:hosts`              | Print all hosts                                                                |
 
+## Usage with ddev
+
+If you use [ddev] for local development, the task `dep flow:import` will not work. You have to enable the setting `ddev` to `true` to make it work. Please run this task not inside the container.
+
 ## Slack notifications
 
 The parameter `slack_webhook` accepts an array with strings beside a simple string.  
@@ -392,6 +396,7 @@ git_commit_types:
 [deployer]: https://deployer.org
 [neos cms]: https://www.neos.io
 [example]: example
+[ddev]: https://ddev.com
 [slack webhook]: https://slack.com/oauth/authorize?&client_id=113734341365.225973502034&scope=incoming-webhook
 [let's encrypt]: https://letsencrypt.org
 [uberspace]: https://uberspace.de/
