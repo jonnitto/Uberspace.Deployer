@@ -10,6 +10,6 @@ Neos:
       backendOptions:
         driver: pdo_mysql
         dbname: '{{db_name}}'
-        user: '{{user}}'
+        user: '{{remote_user}}'
         password: '{{db_password}}'
         host: localhost

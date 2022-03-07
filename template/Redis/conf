@@ -1,4 +1,4 @@
-unixsocket /home/{{user}}/.redis/sock
+unixsocket /home/{{remote_user}}/.redis/sock
 daemonize no
 port 0
 save ""
