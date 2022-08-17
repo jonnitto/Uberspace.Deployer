@@ -10,9 +10,9 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ^8.0",
         "ext-intl": "*",
-        "deployer/deployer": "^6.8"
+        "deployer/deployer": "^6.9"
     },
     "archive": {
         "exclude": [
