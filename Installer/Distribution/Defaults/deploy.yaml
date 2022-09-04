@@ -1,20 +1,35 @@
 # To start a deployment or the
 # installation run `dep deploy`
 
-# The target domain
-domain.tld:
-  # Put here the hostname
-  # https://dashboard.uberspace.de/dashboard/datasheet
-  hostname: __SERVER__.uberspace.de
+import: Build/Uberspace.Deployer/config.yaml
 
-  # Put here the Uberspace username
-  user: __USER__
-
+# If you put settings under config, these will be set as default for every host.
+# Be aware that you can override these settings per host.
+# The hostname has to be set under the hosts section.
+config:
   # Put here the ssh repository
   repository: git@github.com:__OWNER__/__REPOSITORY__.git
+  # Put here the Uberspace username
+  remote_user: __USER__
+  # You can add labels to the deployment
+  # labels:
+  #   stage: production
 
   # Set this to true if you use ddev for local development
   ddev: false
 
   # Add here the slack webhook (optional)
   # slack_webhook: https://hooks.slack.com/services/__YOUR/SLACK/WEBHOOK__
+
+# The hosts section defines the hosts that will be deployed.
+hosts:
+  # The target domain
+  domain.tld:
+    # Put here the hostname
+    # https://dashboard.uberspace.de/dashboard/datasheet
+    hostname: __SERVER__.uberspace.de
+
+    # You can override settings from config here, for example the labels
+    # This is very useful for staging and production environments
+    # labels:
+    #   stage: production

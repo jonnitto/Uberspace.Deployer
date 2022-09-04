@@ -1,0 +1,66 @@
+import:
+  - recipe/common.php
+  - Build/Uberspace.Deployer/config.php
+
+config:
+  # Server specifc values
+  editor: 'vim'
+  html_path: '/var/www/virtual/{{remote_user}}'
+  deploy_path: '{{html_path}}/{{deploy_folder}}'
+  db_backup_folder: '{{deploy_path}}/.dep/databases/dumps'
+  db_backup_keep_dumps: 5
+  http_user: '{{remote_user}}'
+  http_group: '{{remote_user}}'
+
+  # Connection specifc values
+  port: 22
+  forwardAgent: false
+  multiplexing: true
+  ssh_key: '{{repository_short_name}}'
+
+  # Flow specifc values
+  flow_context: Production/Live
+  flow_command: 'FLOW_CONTEXT={{flow_context}} {{bin/php}} -d memory_limit=8G {{release_or_current_path}}/flow'
+  shared_dirs:
+    - 'Data/Persistent'
+    - 'Data/Logs'
+    - 'Configuration'
+
+  # To disable the upload you can set this to false: upload_assets_folder: false;
+  # Mostly used for rendered CSS & JS files, who you don't want in your repository
+  upload_assets_folder:
+    - 'DistributionPackages/*/Resources/Private/Templates/InlineAssets'
+    - 'DistributionPackages/*/Resources/Public/Scripts'
+    - 'DistributionPackages/*/Resources/Public/Styles'
+
+  # Redis specfic values
+  redis_start_db_number: 2
+  redis_defaultLifetime: 0
+  redis_databases:
+    - Flow_Mvc_Routing_Route
+    - Flow_Mvc_Routing_Resolve
+    - Neos_Fusion_Content
+    - Flow_Session_MetaData
+    - Flow_Session_Storage
+    - Neos_Media_ImageSize
+    - Flow_Security_Cryptography_HashService
+
+  # git specfic values
+  git_commit_types:
+    Fix: 'A bug fix'
+    Update: 'A backwards-compatible enhancement'
+    Breaking: 'A backwards-incompatible enhancement'
+    Docs: 'Documentation change'
+    Build: 'Build process update'
+    New: 'A new feature implementation'
+    Upgrade: 'Dependency upgrade'
+    Chore: 'Other changes (e.g.: refactoring)'
+
+  # Slack notification
+  slack_title: '{{slack_application}} (Neos)'
+  slack_text: '_{{deploy_user}}_ deploying *{{repository_short_name}}* on `{{branch}}` to *{{target}}*'
+  slack_success_text: 'Deploy from *{{repository_short_name}}* to *{{target}}* successful'
+  slack_failure_text: 'Deploy from *{{repository_short_name}}* to *{{target}}* failed'
+  slack_color: '#4d91f7'
+  slack_success_color: '#00c100'
+  slack_failure_color: '#ff0909'
